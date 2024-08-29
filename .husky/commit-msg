@@ -2,3 +2,15 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx --no-install commitlint --edit "$1"
+
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+commit_message=$(cat "$1")
+
+# Cho phép commit bắt đầu bằng 'wip:'
+if echo "$commit_message" | grep -q '^wip:'; then
+  exit 0
+fi
+
+# Thêm các quy tắc kiểm tra commit message khác nếu cần

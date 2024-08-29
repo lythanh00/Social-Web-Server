@@ -12,13 +12,13 @@ import { typeOrmConfigAsync } from './database/typeorm.config'; // Import cấu 
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ ignoreEnvFile: true }),
+    // ConfigModule.forRoot({ ignoreEnvFile: true }),
 
     // AuthModule,
 
     // SendgridModule,
     LoggerModule.forRoot(),
-    ConfigModule, // Import ConfigModule để sử dụng ConfigService
+    // ConfigModule, // Import ConfigModule để sử dụng ConfigService
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
   ],
   controllers: [AppController],
