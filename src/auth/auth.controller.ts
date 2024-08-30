@@ -1,26 +1,50 @@
-// import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-// import { Response } from 'express';
-// import { Observable } from 'rxjs';
-// import { map } from 'rxjs/operators';
-// import { AuthService } from './auth.service';
-// import { LocalAuthGuard } from './guard/local-auth.guard';
-// import { AuthenticatedRequest } from './interface/authenticated-request.interface';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dtos/login.dto';
+import { AuthGuard } from './guard/auth.guard';
+import { LocalAuthGuard } from './guard/local-auth.guard';
+import { AuthenticatedRequest } from './interface/authenticated-request.interface';
+import { RegisterDto } from './dtos/register.dto';
+import { MailTokenDto } from './dtos/mailToken.dto';
 
-// @Controller('auth')
-// export class AuthController {
-//   constructor(private authService: AuthService) { }
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
 
-//   @UseGuards(LocalAuthGuard)
-//   @Post('login')
-//   login(@Req() req: AuthenticatedRequest, @Res() res: Response): Observable<Response> {
-//     return this.authService.login(req.user)
-//       .pipe(
-//         map(token => {
-//           return res
-//             .header('Authorization', 'Bearer ' + token.access_token)
-//             .json(token)
-//             .send()
-//         })
-//       );
-//   }
-// }
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  login(@Body() loginDto: LoginDto): Promise<{ access_token: string }> {
+    return this.authService.login(loginDto.email, loginDto.password);
+  }
+
+  @Post('/register')
+  signUp(@Body() registerDto: RegisterDto): Promise<{ access_token: string }> {
+    return this.authService.register(registerDto.email, registerDto.password);
+  }
+
+  @Post('/verify-token')
+  async verifyToken(@Body() mailToken: MailTokenDto) {
+    console.log('mail token', mailToken.token);
+    return this.authService.checkVerify(mailToken.token);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
+}

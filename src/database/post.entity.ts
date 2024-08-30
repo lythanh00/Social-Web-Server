@@ -1,6 +1,6 @@
-import { Comment } from 'comments/comment.entity';
-import { Like } from 'likes/like.entity';
-import { PostImage } from 'post-images/post-image.entity';
+import { Comment } from 'database/comment.entity';
+import { Like } from 'database/like.entity';
+import { PostImage } from 'database/post-image.entity';
 import {
   Entity,
   Column,
@@ -11,7 +11,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { User } from 'users/user.entity';
+import { User } from 'database/user.entity';
 
 @Entity()
 export class Post {

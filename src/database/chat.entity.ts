@@ -1,4 +1,4 @@
-import { Message } from 'messages/message.entity';
+import { Message } from 'database/message.entity';
 import {
   Entity,
   Column,
@@ -9,7 +9,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from 'users/user.entity';
+import { User } from 'database/user.entity';
 
 @Entity()
 export class Chat {

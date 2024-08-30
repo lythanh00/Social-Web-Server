@@ -1,5 +1,5 @@
-import { Asset } from 'assets/asset.entity';
-import { Post } from 'posts/post.entity';
+import { Asset } from 'database/asset.entity';
+import { Post } from 'database/post.entity';
 import {
   Entity,
   Column,

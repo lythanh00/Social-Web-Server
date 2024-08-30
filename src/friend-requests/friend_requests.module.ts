@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FriendRequest } from './friend_request.entity';
+import { FriendRequest } from '../database/friend_request.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FriendRequest])],

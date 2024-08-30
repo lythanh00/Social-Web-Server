@@ -8,7 +8,7 @@ import {
   JoinTable,
   ManyToOne,
 } from 'typeorm';
-import { User } from 'users/user.entity';
+import { User } from 'database/user.entity';
 
 @Entity()
 export class UserFriend {

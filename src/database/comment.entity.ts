@@ -1,4 +1,4 @@
-import { Post } from 'posts/post.entity';
+import { Post } from 'database/post.entity';
 import {
   Entity,
   Column,
@@ -8,20 +8,23 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from 'users/user.entity';
+import { User } from 'database/user.entity';
 
 @Entity()
-export class Like {
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post, (post) => post.likes)
+  @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
   post: Post;
 
-  @ManyToOne(() => User, (user) => user.likes)
+  @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
   user: User;
+
+  @Column('text')
+  content: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

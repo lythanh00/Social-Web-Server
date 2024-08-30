@@ -1,5 +1,5 @@
-import { Asset } from 'assets/asset.entity';
-import { Chat } from 'chats/chat.entity';
+import { Asset } from 'database/asset.entity';
+import { Chat } from 'database/chat.entity';
 import {
   Entity,
   Column,
@@ -10,7 +10,7 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-import { User } from 'users/user.entity';
+import { User } from 'database/user.entity';
 
 @Entity()
 export class Message {

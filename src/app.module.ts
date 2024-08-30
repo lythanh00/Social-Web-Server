@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 import { LoggerModule } from './logger/logger.module';
 import { SendgridModule } from './sendgrid/sendgrid.module';
@@ -14,7 +14,7 @@ import { typeOrmConfigAsync } from './database/typeorm.config'; // Import cấu 
   imports: [
     // ConfigModule.forRoot({ ignoreEnvFile: true }),
 
-    // AuthModule,
+    AuthModule,
 
     // SendgridModule,
     LoggerModule.forRoot(),

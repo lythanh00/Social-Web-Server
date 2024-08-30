@@ -1,11 +1,11 @@
-import { Chat } from 'chats/chat.entity';
-import { Comment } from 'comments/comment.entity';
-import { FriendRequest } from 'friend-requests/friend_request.entity';
-import { Like } from 'likes/like.entity';
-import { Message } from 'messages/message.entity';
-import { Notification } from 'notifications/notification.entity';
-import { Post } from 'posts/post.entity';
-import { Profile } from 'profiles/profile.entity';
+import { Chat } from 'database/chat.entity';
+import { Comment } from 'database/comment.entity';
+import { FriendRequest } from 'database/friend_request.entity';
+import { Like } from 'database/like.entity';
+import { Message } from 'database/message.entity';
+import { Notification } from 'database/notification.entity';
+import { Post } from 'database/post.entity';
+import { Profile } from 'database/profile.entity';
 import {
   Entity,
   Column,
@@ -17,7 +17,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { UserFriend } from 'user-friends/user-friend.entity';
+import { UserFriend } from 'database/user-friend.entity';
 
 @Entity()
 export class User {

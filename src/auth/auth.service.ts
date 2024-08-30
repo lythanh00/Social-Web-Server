@@ -1,69 +1,70 @@
-// import { Injectable, UnauthorizedException } from '@nestjs/common';
-// import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 // import { EMPTY, from, Observable, of } from 'rxjs';
 // import { mergeMap, map, throwIfEmpty } from 'rxjs/operators';
-// import { UserService } from '../users/user.service';
+import { UsersService } from 'users/users.service';
 // import { AccessToken } from './interface/access-token.interface';
 // import { JwtPayload } from './interface/jwt-payload.interface';
 // import { UserPrincipal } from './interface/user-principal.interface';
+import * as bcrypt from 'bcrypt';
+import { MailerService } from './mailer/mailer.service';
 
-// @Injectable()
-// export class AuthService {
-//   constructor(
-//     private userService: UserService,
-//     private jwtService: JwtService,
-//   ) {}
+@Injectable()
+export class AuthService {
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+    private mailerService: MailerService,
+  ) {}
 
-//   validateUser(username: string, pass: string): Observable<UserPrincipal> {
-//     return this.userService.findByUsername(username).pipe(
-//       //if user is not found, convert it into an EMPTY.
-//       mergeMap((p) => (p ? of(p) : EMPTY)),
+  async login(email: string, pass: string): Promise<{ access_token: string }> {
+    const user = await this.usersService.findByEmail(email);
+    if (user?.password !== pass) {
+      throw new UnauthorizedException();
+    }
+    const payload = { sub: user.id, email: user.email };
+    // TODO: Generate a JWT and return it here
+    // instead of the user object
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
 
-//       // Using a general message in the authentication progress is more reasonable.
-//       // Concise info could be considered for security.
-//       // Detailed info will be helpful for crackers.
-//       // throwIfEmpty(() => new NotFoundException(`username:${username} was not found`)),
-//       throwIfEmpty(
-//         () => new UnauthorizedException(`username or password is not matched`),
-//       ),
+  async register(
+    email: string,
+    password: string,
+  ): Promise<{ access_token: string }> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const res = await this.usersService.findByEmail(email);
+    if (res?.id) {
+      throw new UnauthorizedException('username already in used');
+    }
+    try {
+      const user = await this.usersService.createUser(email, hashedPassword);
+      const payload = { sub: user.id, email: user.email };
+      const access_token = await this.jwtService.signAsync(payload);
+      await this.mailerService.sendEmail({
+        email: email,
+        emailType: 'VERIFY',
+        userId: user.id,
+      });
+      return { access_token };
+    } catch (E11000) {
+      throw new UnauthorizedException('email already in used');
+    }
+  }
 
-//       mergeMap((user) => {
-//         const { _id, password, username, email, roles } = user;
-//         return user.comparePassword(pass).pipe(
-//           map((m) => {
-//             if (m) {
-//               return { id: _id, username, email, roles } as UserPrincipal;
-//             } else {
-//               // The same reason above.
-//               //throw new UnauthorizedException('password was not matched.')
-//               throw new UnauthorizedException(
-//                 'username or password is not matched',
-//               );
-//             }
-//           }),
-//         );
-//       }),
-//     );
-//   }
-
-//   // If `LocalStrateg#validateUser` return a `Observable`, the `request.user` is
-//   // bound to a `Observable<UserPrincipal>`, not a `UserPrincipal`.
-//   //
-//   // I would like use the current `Promise` for this case, thus it will get
-//   // a `UserPrincipal` here directly.
-//   //
-//   login(user: UserPrincipal): Observable<AccessToken> {
-//     //console.log(user);
-//     const payload: JwtPayload = {
-//       upn: user.username, //upn is defined in Microprofile JWT spec, a human readable principal name.
-//       sub: user.id,
-//       email: user.email,
-//       roles: user.roles,
-//     };
-//     return from(this.jwtService.signAsync(payload)).pipe(
-//       map((access_token) => {
-//         return { access_token };
-//       }),
-//     );
-//   }
-// }
+  async checkVerify(token: string) {
+    const tokendecore = await this.jwtService.decode(token);
+    const userId = tokendecore.id;
+    const email = tokendecore.email;
+    if (!userId) {
+      throw new UnauthorizedException('User not found...');
+    }
+    if (!tokendecore) {
+      throw new UnauthorizedException('Token not match');
+    }
+    const user = await this.usersService.checkVerify(email);
+    return true;
+  }
+}
