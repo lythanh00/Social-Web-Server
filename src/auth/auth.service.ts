@@ -17,11 +17,25 @@ export class AuthService {
     private mailerService: MailerService,
   ) {}
 
-  async login(email: string, pass: string): Promise<{ access_token: string }> {
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ access_token: string }> {
     const user = await this.usersService.findByEmail(email);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+    if (!user) {
+      throw new UnauthorizedException('Invalid email');
     }
+
+    if (!user.isVerified) {
+      throw new UnauthorizedException('Email is not verifed');
+    }
+
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatched) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
     const payload = { sub: user.id, email: user.email };
     // TODO: Generate a JWT and return it here
     // instead of the user object
