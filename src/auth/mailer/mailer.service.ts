@@ -56,7 +56,7 @@ export class MailerService {
           emailType === 'VERIFY' ? 'Verify your email' : 'Reset your password',
         html:
           emailType === 'VERIFY'
-            ? `<a href="${process.env.APP_URL}/auth/verifytoken?token=${token}"> here </a>`
+            ? `<a href="${process.env.APP_URL_CLIENT}/auth/verifytoken?token=${token}"> here </a>`
             : `<p><a href ="${process.env.APP_URL}/auth/forgotpassword-token?token=${token}"> Reset your password </a></p>`,
       };
       const mailres = await transporter.sendMail(mailOptions);
