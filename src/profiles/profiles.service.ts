@@ -6,6 +6,7 @@ import { User } from 'database/user.entity';
 
 import { AssetsService } from 'assets/assets.service';
 import { Asset } from 'database/asset.entity';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
 
 @Injectable()
 export class ProfilesService {
@@ -31,7 +32,18 @@ export class ProfilesService {
     if (!profile) {
       throw new UnauthorizedException('User not found...');
     }
-
     return profile;
+  }
+
+  //Update profile
+  async updateProfile(userId, updateProfileDto: UpdateProfileDto) {
+    const profile = await this.getProfile(userId);
+
+    if (!profile) {
+      throw new UnauthorizedException('User not found...');
+    }
+
+    await Object.assign(profile, updateProfileDto);
+    return this.profileRepository.save(profile);
   }
 }

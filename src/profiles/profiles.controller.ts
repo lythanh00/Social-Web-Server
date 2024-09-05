@@ -6,10 +6,18 @@ import {
   Body,
   UseGuards,
   Request,
+  Put,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { Profile } from '../database/profile.entity';
 import { AuthGuard } from 'auth/guard/auth.guard';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -20,4 +28,27 @@ export class ProfilesController {
     console.log('req', req.user.id);
     return this.profilesService.getProfile(req.user.id);
   }
+
+  @UseGuards(AuthGuard)
+  @Put('update-profile')
+  async updateProfile(
+    @Body() updateProfileDto: UpdateProfileDto,
+    @Request() req,
+  ) {
+    return this.profilesService.updateProfile(req.user.id, updateProfileDto);
+  }
+
+  // @UseGuards(AuthGuard)
+  // @Post('update-avatar-profile')
+  // @UseInterceptors(FileInterceptor('avatar-group'))
+  // uploadImage(@UploadedFile(new ParseFilePipe({
+  //   validators: [
+  //     new MaxFileSizeValidator({ maxSize: 1000000 }),
+  //     new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+  //   ],
+  // }),) file: Express.Multer.File,
+  // @Body() updateAvatarGroupDto: UpdateAvatarGroupDto) {
+  //   return this.groupChatsService.updateAvaterGroup(
+  //     updateAvatarGroupDto, file);
+  // }
 }
