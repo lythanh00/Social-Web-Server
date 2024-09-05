@@ -38,13 +38,6 @@ export class AuthController {
 
   @Post('/verify-token')
   async verifyToken(@Body() mailToken: MailTokenDto) {
-    console.log('mail token', mailToken.token);
     return this.authService.checkVerify(mailToken.token);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
   }
 }

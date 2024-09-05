@@ -8,8 +8,6 @@ import * as nodemailer from 'nodemailer';
 export class MailerService {
   constructor(private jwtService: JwtService) {}
   mailTransport() {
-    console.log('mail host', process.env.MAIL_HOST);
-
     const transporter = nodemailer.createTransport({
       host: String(process.env.MAIL_HOST),
       port: Number(process.env.MAIL_PORT),
@@ -60,7 +58,7 @@ export class MailerService {
             : `<p><a href ="${process.env.APP_URL}/auth/forgotpassword-token?token=${token}"> Reset your password </a></p>`,
       };
       const mailres = await transporter.sendMail(mailOptions);
-      console.log(mailres);
+
       return mailres;
     } catch (error) {
       console.log(error.message);

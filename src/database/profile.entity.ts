@@ -19,13 +19,13 @@ export class Profile {
   @JoinColumn() // Xác định userId là khóa ngoại
   user: User;
 
-  @Column()
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   dateOfBirth: Date;
 
   @OneToOne(() => Asset)

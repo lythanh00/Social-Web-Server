@@ -8,6 +8,9 @@ import { UsersService } from 'users/users.service';
 // import { UserPrincipal } from './interface/user-principal.interface';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from './mailer/mailer.service';
+import { ProfilesService } from 'profiles/profiles.service';
+import { AssetsService } from 'assets/assets.service';
+import { IMAGE } from 'constant/image';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +18,8 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailerService: MailerService,
+    private profilesService: ProfilesService,
+    private assetsService: AssetsService,
   ) {}
 
   async login(
@@ -36,7 +41,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email };
     // TODO: Generate a JWT and return it here
     // instead of the user object
     return {
@@ -55,7 +60,16 @@ export class AuthService {
     }
     try {
       const user = await this.usersService.createUser(email, hashedPassword);
-      const payload = { sub: user.id, email: user.email };
+      const avatar = await this.assetsService.createAsset(IMAGE.AVATAR);
+      const coverPhoto = await this.assetsService.createAsset(
+        IMAGE.COVER_PHOTO,
+      );
+      const profile = await this.profilesService.createProfile(
+        user,
+        avatar,
+        coverPhoto,
+      );
+      const payload = { id: user.id, email: user.email };
       const access_token = await this.jwtService.signAsync(payload);
       await this.mailerService.sendEmail({
         email: email,

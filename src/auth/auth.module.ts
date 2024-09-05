@@ -5,6 +5,8 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth.constants';
 import { MailerModule } from './mailer/mailer.module';
+import { ProfilesModule } from 'profiles/profiles.module';
+import { AssetsModule } from 'assets/assets.module';
 // import { PassportModule } from '@nestjs/passport';
 // import { LocalStrategy } from './strategy/local.strategy';
 // import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
@@ -21,6 +23,8 @@ import { MailerModule } from './mailer/mailer.module';
       signOptions: { expiresIn: '1y' },
     }),
     MailerModule,
+    ProfilesModule,
+    AssetsModule,
   ],
   providers: [
     AuthService,
