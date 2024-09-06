@@ -27,12 +27,12 @@ export class FriendRequestsController {
     );
   }
 
-  // @UseGuards(AuthGuard)
-  // @Put('respond/:requestId')
-  // async respondToFriendRequest(
-  //   @Param('requestId') requestId: number,
-  //   @Body('accept') accept: boolean,
-  // ) {
-  //   return this.friendRequestService.respondToFriendRequest(requestId, accept);
-  // }
+  @UseGuards(AuthGuard)
+  @Put('respond/:requestId')
+  async respondToFriendRequest(
+    @Param('requestId') requestId: number,
+    @Body('accept') accept: boolean,
+  ) {
+    return this.friendRequestsService.respondToFriendRequest(requestId, accept);
+  }
 }
