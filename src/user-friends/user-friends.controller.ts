@@ -6,6 +6,7 @@ import {
   Body,
   Request,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { UserFriendsService } from './user-friends.service';
 import { AuthGuard } from 'auth/guard/auth.guard';
@@ -17,5 +18,11 @@ export class UserFriendsController {
   @Get('list-friends')
   async getFriends(@Request() req) {
     return this.userFriendsService.getListFriends(req.user.id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('remove-friend')
+  async removeFriend(@Request() req, @Body('friendId') friendId: number) {
+    return this.userFriendsService.removeFriend(req.user.id, friendId);
   }
 }

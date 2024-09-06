@@ -7,6 +7,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from 'database/user.entity';
 
@@ -26,4 +27,7 @@ export class UserFriend {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn() // Cột soft delete
+  deletedAt: Date | null;
 }
