@@ -7,9 +7,14 @@ import { ProfilesController } from './profiles.controller';
 import { User } from 'database/user.entity';
 import { UsersModule } from 'users/users.module';
 import { AssetsModule } from 'assets/assets.module';
+import { CloudinaryModule } from 'cloudinary/cloudinary.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Profile, User]), AssetsModule],
+  imports: [
+    TypeOrmModule.forFeature([Profile, User]),
+    AssetsModule,
+    CloudinaryModule,
+  ],
   providers: [ProfilesService],
   controllers: [ProfilesController],
   exports: [ProfilesService],

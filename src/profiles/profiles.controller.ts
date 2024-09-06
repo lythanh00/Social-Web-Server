@@ -38,17 +38,39 @@ export class ProfilesController {
     return this.profilesService.updateProfile(req.user.id, updateProfileDto);
   }
 
-  // @UseGuards(AuthGuard)
-  // @Post('update-avatar-profile')
-  // @UseInterceptors(FileInterceptor('avatar-group'))
-  // uploadImage(@UploadedFile(new ParseFilePipe({
-  //   validators: [
-  //     new MaxFileSizeValidator({ maxSize: 1000000 }),
-  //     new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-  //   ],
-  // }),) file: Express.Multer.File,
-  // @Body() updateAvatarGroupDto: UpdateAvatarGroupDto) {
-  //   return this.groupChatsService.updateAvaterGroup(
-  //     updateAvatarGroupDto, file);
-  // }
+  @UseGuards(AuthGuard)
+  @Post('update-avatar-profile')
+  @UseInterceptors(FileInterceptor('avatar-profile'))
+  async uploadAvatarProfile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() req,
+  ) {
+    return this.profilesService.updateAvatarProfile(req.user.id, file);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('update-coverphoto-profile')
+  @UseInterceptors(FileInterceptor('coverphoto-profile'))
+  async uploadCoverPhotoProfile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() req,
+  ) {
+    return this.profilesService.updateCoverPhotoProfile(req.user.id, file);
+  }
 }
