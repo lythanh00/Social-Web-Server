@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from 'database/user.entity';
 import { Asset } from 'database/asset.entity';
 import { UserFriend } from 'database/user-friend.entity';
-import { FriendRequest } from 'database/friend_request.entity';
+import { FriendRequest } from 'database/friend-request.entity';
 import { Profile } from 'database/profile.entity';
 import { Post } from 'database/post.entity';
 import { PostImage } from 'database/post-image.entity';

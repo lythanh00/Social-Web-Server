@@ -19,7 +19,7 @@ import { AuthGuard } from './guard/auth.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { AuthenticatedRequest } from './interface/authenticated-request.interface';
 import { RegisterDto } from './dtos/register.dto';
-import { MailTokenDto } from './dtos/mailToken.dto';
+import { MailTokenDto } from './dtos/mail-token.dto';
 
 @Controller('auth')
 export class AuthController {

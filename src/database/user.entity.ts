@@ -1,6 +1,6 @@
 import { Chat } from 'database/chat.entity';
 import { Comment } from 'database/comment.entity';
-import { FriendRequest } from 'database/friend_request.entity';
+import { FriendRequest } from 'database/friend-request.entity';
 import { Like } from 'database/like.entity';
 import { Message } from 'database/message.entity';
 import { Notification } from 'database/notification.entity';
