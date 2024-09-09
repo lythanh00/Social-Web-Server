@@ -8,6 +8,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { ProfilesModule } from 'profiles/profiles.module';
 import { AssetsModule } from 'assets/assets.module';
 import { FriendRequestsModule } from 'friend-requests/friend-requests.module';
+import { PostsModule } from 'posts/posts.module';
 // import { PassportModule } from '@nestjs/passport';
 // import { LocalStrategy } from './strategy/local.strategy';
 // import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
@@ -27,6 +28,7 @@ import { FriendRequestsModule } from 'friend-requests/friend-requests.module';
     ProfilesModule,
     AssetsModule,
     FriendRequestsModule,
+    PostsModule,
   ],
   providers: [
     AuthService,
