@@ -22,4 +22,12 @@ export class PostImagesService {
     const postImage = this.postImagesRepository.create({ post, image });
     return this.postImagesRepository.save(postImage);
   }
+
+  async getListPostImages(postId: number): Promise<PostImage[]> {
+    const listPostImages = await this.postImagesRepository.find({
+      where: { post: { id: postId } },
+      relations: ['image'], // Tự động tải avatar và coverPhoto
+    });
+    return listPostImages;
+  }
 }

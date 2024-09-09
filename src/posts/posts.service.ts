@@ -15,6 +15,7 @@ import { UsersService } from 'users/users.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PostImagesService } from 'post-images/post-images.service';
 import { CreatePostResponseDto } from './dtos/create-post-response.dto';
+import { GetPostResponseDto } from './dtos/get-post-response.dto';
 
 @Injectable()
 export class PostsService {
@@ -27,11 +28,13 @@ export class PostsService {
     private usersService: UsersService,
   ) {}
 
+  // tao bai viet co ban
   async createPost(user: User, content: string) {
     const post = await this.postRepository.create({ user, content });
     return this.postRepository.save(post);
   }
 
+  // tao bai viet co hinh anh
   async createPostWithImages(
     userId: number,
     createPostDto: CreatePostDto,
@@ -69,6 +72,7 @@ export class PostsService {
     };
   }
 
+  // tao bai viet khong hinh anh
   async createPostNoImages(
     userId: number,
     createPostDto: CreatePostDto,
@@ -85,5 +89,36 @@ export class PostsService {
       content,
       createdAt: post.createdAt,
     };
+  }
+
+  async getListPostsByUser(userId): Promise<GetPostResponseDto[]> {
+    {
+      const listPosts = await this.postRepository.find({
+        where: { user: { id: userId } },
+      });
+      if (!listPosts) {
+        throw new UnauthorizedException('List posts not found...');
+      }
+
+      const listPostsWithImages = await Promise.all(
+        listPosts.map(async (post) => {
+          const postWithImages = await this.postImagesService.getListPostImages(
+            post.id,
+          );
+          return {
+            id: post.id,
+            content: post.content,
+            createdAt: post.createdAt,
+            updateAt: post.updatedAt,
+            images: postWithImages.map((image) => ({
+              id: image.id,
+              url: image.image.url,
+            })),
+          };
+        }),
+      );
+
+      return listPostsWithImages;
+    }
   }
 }

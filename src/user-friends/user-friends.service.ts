@@ -39,7 +39,7 @@ export class UserFriendsService {
       relations: ['friend'],
     });
 
-    const friendsWithProfiles = await Promise.all(
+    const friendsWithProfile = await Promise.all(
       friends.map(async (friend) => {
         const friendProfile = await this.profilesService.getProfile(
           friend.friend.id,
@@ -53,7 +53,7 @@ export class UserFriendsService {
         };
       }),
     );
-    return friendsWithProfiles;
+    return friendsWithProfile;
   }
 
   async removeFriend(userId: number, friendId: number) {

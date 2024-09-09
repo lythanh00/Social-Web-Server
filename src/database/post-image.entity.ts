@@ -21,7 +21,7 @@ export class PostImage {
   post: Post;
 
   @OneToOne(() => Asset)
-  @JoinColumn() // Đặt tên cột khóa ngoại trong bảng post_images
+  @JoinColumn()
   image: Asset;
 
   @CreateDateColumn({ type: 'timestamp' })

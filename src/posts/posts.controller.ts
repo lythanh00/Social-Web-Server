@@ -57,4 +57,10 @@ export class PostsController {
 
     return this.postsService.createPostNoImages(req.user.id, createPostDto);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('list-posts-by-owner')
+  async getListPostsByOwner(@Request() req) {
+    return this.postsService.getListPostsByUser(req.user.id);
+  }
 }
