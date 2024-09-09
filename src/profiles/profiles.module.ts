@@ -14,6 +14,7 @@ import { CloudinaryModule } from 'cloudinary/cloudinary.module';
     TypeOrmModule.forFeature([Profile, User]),
     AssetsModule,
     CloudinaryModule,
+    UsersModule,
   ],
   providers: [ProfilesService],
   controllers: [ProfilesController],

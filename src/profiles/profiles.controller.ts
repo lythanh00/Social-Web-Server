@@ -12,6 +12,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Query,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { Profile } from '../database/profile.entity';
@@ -72,5 +73,17 @@ export class ProfilesController {
     @Request() req,
   ) {
     return this.profilesService.updateCoverPhotoProfile(req.user.id, file);
+  }
+
+  @UseGuards(AuthGuard) // Bảo vệ bằng JWT, nếu cần
+  @Get('search-profile-by-email')
+  async searchProfileByEmail(@Query('email') email: string) {
+    return this.profilesService.findProfileByEmail(email);
+  }
+
+  @UseGuards(AuthGuard) // Bảo vệ bằng JWT, nếu cần
+  @Get('search-profile-by-name')
+  async searchProfileByName(@Query('name') name: string) {
+    return this.profilesService.findProfilesByName(name);
   }
 }

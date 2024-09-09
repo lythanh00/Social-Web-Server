@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Profile } from '../database/profile.entity';
 import { User } from 'database/user.entity';
 
@@ -12,6 +12,7 @@ import { AssetsService } from 'assets/assets.service';
 import { Asset } from 'database/asset.entity';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { CloudinaryService } from 'cloudinary/cloudinary.service';
+import { UsersService } from 'users/users.service';
 
 @Injectable()
 export class ProfilesService {
@@ -20,6 +21,7 @@ export class ProfilesService {
     private profileRepository: Repository<Profile>,
     private assetsService: AssetsService,
     private cloudinary: CloudinaryService,
+    private usersService: UsersService,
   ) {}
 
   async createProfile(
@@ -93,5 +95,22 @@ export class ProfilesService {
 
     await Object.assign(profile, { coverPhoto });
     return this.profileRepository.save(profile);
+  }
+
+  async findProfileByEmail(email: string) {
+    const user = await this.usersService.findUserByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return this.getProfile(user.id);
+  }
+
+  async findProfilesByName(name: string): Promise<Profile[]> {
+    return this.profileRepository.find({
+      where: [
+        { firstName: ILike(`%${name}%`) },
+        { lastName: ILike(`%${name}%`) },
+      ],
+    });
   }
 }
