@@ -148,30 +148,22 @@ export class PostsService {
     {
       const listPosts = await this.postRepository.find({
         where: { user: { id: userId } },
+        relations: ['images', 'images.image'],
       });
       if (!listPosts) {
         throw new UnauthorizedException('List posts not found...');
       }
 
-      const listPostsWithImages = await Promise.all(
-        listPosts.map(async (post) => {
-          const postWithImages = await this.postImagesService.getListPostImages(
-            post.id,
-          );
-          return {
-            id: post.id,
-            content: post.content,
-            createdAt: post.createdAt,
-            updateAt: post.updatedAt,
-            images: postWithImages.map((image) => ({
-              id: image.id,
-              url: image.image.url,
-            })),
-          };
-        }),
-      );
-
-      return listPostsWithImages;
+      return listPosts.map((post) => ({
+        id: post.id,
+        content: post.content,
+        createdAt: post.createdAt,
+        updateAt: post.updatedAt,
+        images: post.images.map((image) => ({
+          id: image.image.id,
+          url: image.image.url,
+        })),
+      }));
     }
   }
 
