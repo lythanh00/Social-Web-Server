@@ -34,4 +34,9 @@ export class LikesController {
   async unlikePost(@Request() req, @Param('postId') postId: number) {
     return this.likesService.unlikePost(req.user.id, postId);
   }
+  @UseGuards(AuthGuard)
+  @Get('list-likes/:postId')
+  async getListLikesOfPost(@Param('postId') postId: number) {
+    return this.likesService.getListLikesOfPost(postId);
+  }
 }

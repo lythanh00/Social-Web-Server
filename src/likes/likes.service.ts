@@ -11,6 +11,8 @@ import { PostsService } from 'posts/posts.service';
 import { UsersService } from 'users/users.service';
 import { Post } from 'database/post.entity';
 import { User } from 'database/user.entity';
+import { UserLikePostResponseDto } from './dtos/user-like-post-response.dto';
+import { ProfilesService } from 'profiles/profiles.service';
 
 @Injectable()
 export class LikesService {
@@ -19,7 +21,14 @@ export class LikesService {
     private likeRepository: Repository<Like>,
     private postsService: PostsService,
     private usersService: UsersService,
+    private profilesService: ProfilesService,
   ) {}
+
+  async getLike(postId: number, userId: number): Promise<Like> {
+    return await this.likeRepository.findOne({
+      where: { post: { id: postId }, user: { id: userId }, deletedAt: null },
+    });
+  }
 
   async createLike(post: Post, user: User): Promise<Like> {
     const like = this.likeRepository.create({ post, user });
@@ -29,6 +38,33 @@ export class LikesService {
   async removeLike(existingLike): Promise<boolean> {
     await this.likeRepository.softDelete(existingLike.id); // Soft delete với TypeORM
     return true;
+  }
+
+  async getListLikesOfPost(postId: number): Promise<UserLikePostResponseDto[]> {
+    const post = await this.postsService.getBasePostById(postId);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    const listLikes = await this.likeRepository.find({
+      where: { post: { id: postId } },
+      relations: ['user', 'user.profile', 'user.profile.avatar'],
+    });
+
+    return listLikes.map((like) => ({
+      id: like.id,
+      user: {
+        id: like.user.id,
+      },
+      profile: {
+        id: like.user.id,
+        firstName: like.user.profile.firstName,
+        lastName: like.user.profile.lastName,
+        avatar: {
+          id: like.user.profile.avatar.id,
+          url: like.user.profile.avatar.url,
+        },
+      },
+    }));
   }
 
   async likePost(userId: number, postId: number): Promise<{ message: string }> {
@@ -54,7 +90,7 @@ export class LikesService {
         throw new BadRequestException('User already liked this post');
       }
     } else {
-      const like = this.createLike(post, user);
+      const like = await this.createLike(post, user);
       return { message: 'You have successfully liked the post.' };
     }
   }
@@ -70,9 +106,7 @@ export class LikesService {
       throw new NotFoundException('Post or User not found');
     }
 
-    const existingLike = await this.likeRepository.findOne({
-      where: { post: { id: postId }, user: { id: userId }, deletedAt: null },
-    });
+    const existingLike = await this.getLike(postId, userId);
 
     if (!existingLike) {
       throw new BadRequestException('User has not liked this post');

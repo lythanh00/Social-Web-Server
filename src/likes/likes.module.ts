@@ -8,7 +8,12 @@ import { ProfilesModule } from 'profiles/profiles.module';
 import { UsersModule } from 'users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Like]), PostsModule, UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Like]),
+    PostsModule,
+    UsersModule,
+    ProfilesModule,
+  ],
   providers: [LikesService],
   controllers: [LikesController],
 })
