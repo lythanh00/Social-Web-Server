@@ -28,6 +28,29 @@ export class PostsService {
     private usersService: UsersService,
   ) {}
 
+  // lay bai viet theo id
+  async getPostById(id) {
+    const post = await this.postRepository.findOneBy({
+      id,
+    });
+    if (!post) {
+      throw new UnauthorizedException('Post not found...');
+    }
+    const postWithImages = await this.postImagesService.getListPostImages(
+      post.id,
+    );
+    return {
+      id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      updateAt: post.updatedAt,
+      images: postWithImages.map((image) => ({
+        id: image.id,
+        url: image.image.url,
+      })),
+    };
+  }
+
   // tao bai viet co ban
   async createPost(user: User, content: string) {
     const post = await this.postRepository.create({ user, content });
@@ -121,5 +144,18 @@ export class PostsService {
 
       return listPostsWithImages;
     }
+  }
+
+  async removePost(userId: number, postId: number): Promise<boolean> {
+    const post = await this.postRepository.findOne({
+      where: { id: postId, user: { id: userId } },
+    });
+    if (!post) {
+      throw new UnauthorizedException(
+        'Post not found or you do not have permission to delete this post.',
+      );
+    }
+    await this.postRepository.softDelete(post.id); // Soft delete với TypeORM
+    return true;
   }
 }

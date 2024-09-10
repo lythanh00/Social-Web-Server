@@ -13,6 +13,7 @@ import {
   FileTypeValidator,
   ParseFilePipe,
   BadRequestException,
+  Delete,
 } from '@nestjs/common';
 
 import { User } from '../database/user.entity';
@@ -68,5 +69,20 @@ export class PostsController {
   @Get('list-posts-by-user/:id')
   async getListPostsByUser(@Param('id') userId: number) {
     return this.postsService.getListPostsByUser(userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('get-post/:id')
+  async getPostById(@Param('id') postId: number) {
+    return this.postsService.getPostById(postId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('remove-post')
+  async removeFriend(
+    @Request() req,
+    @Body('postId') postId: number,
+  ): Promise<boolean> {
+    return this.postsService.removePost(req.user.id, postId);
   }
 }
