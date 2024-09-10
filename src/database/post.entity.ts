@@ -23,7 +23,7 @@ export class Post {
   @JoinColumn()
   user: User;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   content: string;
 
   @CreateDateColumn({ type: 'timestamp' })

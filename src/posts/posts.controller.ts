@@ -14,6 +14,7 @@ import {
   ParseFilePipe,
   BadRequestException,
   Delete,
+  Put,
 } from '@nestjs/common';
 
 import { User } from '../database/user.entity';
@@ -21,6 +22,7 @@ import { AuthGuard } from 'auth/guard/auth.guard';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { UpdatePostDto } from './dtos/update-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -84,5 +86,44 @@ export class PostsController {
     @Body('postId') postId: number,
   ): Promise<boolean> {
     return this.postsService.removePost(req.user.id, postId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('update-post/:postId')
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      // tối đa 10 hình ảnh
+      limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn kích thước tệp là 5MB mỗi tệp
+    }),
+  )
+  async updatePost(
+    @Request() req,
+    @Param('postId') postId: number,
+    @Body() updatePostDto: UpdatePostDto,
+    @UploadedFiles()
+    files: Express.Multer.File[],
+  ) {
+    if (files && files.length > 0) {
+      for (const file of files) {
+        if (file.size > 1000000) {
+          throw new BadRequestException('File size exceeds the limit of 1MB.');
+        }
+        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+          throw new BadRequestException('Invalid file type.');
+        }
+      }
+      return this.postsService.updatePostWithImages(
+        req.user.id,
+        postId,
+        updatePostDto,
+        files,
+      );
+    }
+
+    return this.postsService.updatePostNoImages(
+      req.user.id,
+      postId,
+      updatePostDto,
+    );
   }
 }
