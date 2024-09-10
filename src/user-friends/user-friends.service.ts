@@ -34,26 +34,18 @@ export class UserFriendsService {
   async getListFriends(
     userId: number,
   ): Promise<FriendOfListFriendsResponseDto[]> {
-    const friends = await this.userFriendRepository.find({
+    const userFriends = await this.userFriendRepository.find({
       where: [{ user: { id: userId } }],
-      relations: ['friend'],
+      relations: ['friend', 'friend.profile'],
     });
 
-    const friendsWithProfile = await Promise.all(
-      friends.map(async (friend) => {
-        const friendProfile = await this.profilesService.getProfile(
-          friend.friend.id,
-        );
-        return {
-          id: friend.id,
-          friend: {
-            id: friend.friend.id,
-            profile: friendProfile,
-          },
-        };
-      }),
-    );
-    return friendsWithProfile;
+    return userFriends.map((userFriend) => ({
+      id: userFriend.id,
+      friend: {
+        id: userFriend.friend.id,
+        profile: userFriend.friend.profile,
+      },
+    }));
   }
 
   async removeFriend(userId: number, friendId: number) {
