@@ -91,6 +91,7 @@ export class PostsService {
     };
   }
 
+  // lay danh sach bai viet theo user id
   async getListPostsByUser(userId): Promise<GetPostResponseDto[]> {
     {
       const listPosts = await this.postRepository.find({

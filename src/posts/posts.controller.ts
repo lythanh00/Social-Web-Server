@@ -63,4 +63,10 @@ export class PostsController {
   async getListPostsByOwner(@Request() req) {
     return this.postsService.getListPostsByUser(req.user.id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('list-posts-by-user/:id')
+  async getListPostsByUser(@Param('id') userId: number) {
+    return this.postsService.getListPostsByUser(userId);
+  }
 }
