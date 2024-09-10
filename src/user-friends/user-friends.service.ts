@@ -22,8 +22,8 @@ export class UserFriendsService {
   }
 
   async getUserFriend(userId: number, friendId: number): Promise<UserFriend> {
-    const user = await this.usersService.findUserById(userId);
-    const friend = await this.usersService.findUserById(friendId);
+    const user = await this.usersService.getUserById(userId);
+    const friend = await this.usersService.getUserById(friendId);
     const userFriend = await this.userFriendRepository.findOne({
       where: { user: { id: userId }, friend: { id: friendId } },
       relations: ['user', 'friend'],

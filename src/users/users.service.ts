@@ -10,7 +10,7 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  async findUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
   }
 
@@ -27,20 +27,7 @@ export class UsersService {
     return user;
   }
 
-  async findUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     return this.userRepository.findOneBy({ id });
-  }
-
-  //
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
-  async findOne(id: number): Promise<User> {
-    return this.userRepository.findOneBy({ id });
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.userRepository.delete(id);
   }
 }

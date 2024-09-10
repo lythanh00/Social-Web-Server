@@ -30,6 +30,16 @@ export class PostsService {
     private usersService: UsersService,
   ) {}
 
+  async getBasePostById(id) {
+    const post = await this.postRepository.findOneBy({
+      id,
+    });
+    if (!post) {
+      throw new UnauthorizedException('Post not found...');
+    }
+    return post;
+  }
+
   // lay bai viet theo id
   async getPostById(id) {
     const post = await this.postRepository.findOneBy({
@@ -83,7 +93,7 @@ export class PostsService {
     files: Express.Multer.File[],
   ): Promise<CreatePostResponseDto> {
     const content = createPostDto.content;
-    const user = await this.usersService.findUserById(userId);
+    const user = await this.usersService.getUserById(userId);
     const post = await this.createPost(user, content);
     const images: Asset[] = [];
     for (const file of files) {
@@ -120,7 +130,7 @@ export class PostsService {
     createPostDto: CreatePostDto,
   ): Promise<CreatePostResponseDto> {
     const content = createPostDto.content;
-    const user = await this.usersService.findUserById(userId);
+    const user = await this.usersService.getUserById(userId);
     const post = await this.createPost(user, content);
 
     return {

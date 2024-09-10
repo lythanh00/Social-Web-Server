@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from 'database/user.entity';
 
@@ -28,4 +29,7 @@ export class Like {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn() // Cột soft delete
+  deletedAt: Date | null;
 }

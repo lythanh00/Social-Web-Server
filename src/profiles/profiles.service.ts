@@ -98,7 +98,7 @@ export class ProfilesService {
   }
 
   async findProfileByEmail(email: string) {
-    const user = await this.usersService.findUserByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

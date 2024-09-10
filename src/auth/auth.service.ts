@@ -26,7 +26,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findUserByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email');
     }
@@ -54,7 +54,7 @@ export class AuthService {
     password: string,
   ): Promise<{ access_token: string }> {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const res = await this.usersService.findUserByEmail(email);
+    const res = await this.usersService.getUserByEmail(email);
     if (res?.id) {
       throw new UnauthorizedException('username already in used');
     }

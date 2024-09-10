@@ -9,6 +9,7 @@ import { ProfilesModule } from 'profiles/profiles.module';
 import { AssetsModule } from 'assets/assets.module';
 import { FriendRequestsModule } from 'friend-requests/friend-requests.module';
 import { PostsModule } from 'posts/posts.module';
+import { LikesModule } from 'likes/likes.module';
 // import { PassportModule } from '@nestjs/passport';
 // import { LocalStrategy } from './strategy/local.strategy';
 // import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
@@ -29,6 +30,7 @@ import { PostsModule } from 'posts/posts.module';
     AssetsModule,
     FriendRequestsModule,
     PostsModule,
+    LikesModule,
   ],
   providers: [
     AuthService,

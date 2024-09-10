@@ -56,8 +56,8 @@ export class FriendRequestsService {
       throw new BadRequestException('Cannot send friend request to yourself.');
     }
 
-    const sender = await this.usersService.findUserById(senderId);
-    const receiver = await this.usersService.findUserById(receiverId);
+    const sender = await this.usersService.getUserById(senderId);
+    const receiver = await this.usersService.getUserById(receiverId);
 
     if (!sender || !receiver) {
       throw new NotFoundException('User not found.');
