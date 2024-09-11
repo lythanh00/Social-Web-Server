@@ -15,6 +15,7 @@ import { User } from 'database/user.entity';
 import { ProfilesService } from 'profiles/profiles.service';
 import { CreatecommentResponseDto } from './dtos/create-comment-response.dto';
 import { UpdatecommentResponseDto } from './dtos/update-comment-response.dto';
+import { GetCommentResponseDto } from './dtos/get-comment-response.dto';
 
 @Injectable()
 export class CommentsService {
@@ -32,6 +33,32 @@ export class CommentsService {
   ): Promise<Comment> {
     const comment = this.commentRepository.create({ post, user, content });
     return this.commentRepository.save(comment);
+  }
+
+  async getCommentsByPost(postId: number): Promise<GetCommentResponseDto[]> {
+    const post = await this.postsService.getBasePostById(postId);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const listComments = await this.commentRepository.find({
+      where: { post: { id: postId } },
+      relations: ['user', 'post'], // Để lấy thông tin người dùng đã bình luận
+    });
+
+    return listComments.map((comment) => ({
+      id: comment.id,
+      post: {
+        id: comment.post.id,
+      },
+      user: {
+        id: comment.user.id,
+      },
+      content: comment.content,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt,
+    }));
   }
 
   async createCommentPost(

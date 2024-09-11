@@ -26,6 +26,12 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(AuthGuard)
+  @Get('get-comments-post/:postId')
+  async getCommentsByPost(@Param('postId') postId: number) {
+    return this.commentsService.getCommentsByPost(postId);
+  }
+
+  @UseGuards(AuthGuard)
   @Post('create-comment-post/:postId')
   async createCommentPost(
     @Request() req,
