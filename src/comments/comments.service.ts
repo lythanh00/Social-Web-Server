@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -12,7 +13,8 @@ import { UsersService } from 'users/users.service';
 import { Post } from 'database/post.entity';
 import { User } from 'database/user.entity';
 import { ProfilesService } from 'profiles/profiles.service';
-import { CreatecommentPostResponseDto } from './dtos/create-comment-post-response.dto';
+import { CreatecommentResponseDto } from './dtos/create-comment-response.dto';
+import { UpdatecommentResponseDto } from './dtos/update-comment-response.dto';
 
 @Injectable()
 export class CommentsService {
@@ -36,7 +38,7 @@ export class CommentsService {
     userId: number,
     postId: number,
     content: string,
-  ): Promise<CreatecommentPostResponseDto> {
+  ): Promise<CreatecommentResponseDto> {
     const post = await this.postsService.getBasePostById(postId);
 
     if (!post) {
@@ -61,6 +63,34 @@ export class CommentsService {
       content: comment.content,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
+    };
+  }
+
+  async updateCommentPost(
+    userId: number,
+    commentId: number,
+    content: string,
+  ): Promise<UpdatecommentResponseDto> {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId, user: { id: userId } },
+      relations: ['user', 'post'],
+    });
+
+    if (!comment) {
+      throw new NotFoundException(
+        'Comment not found or You are not allowed to edit this comment',
+      );
+    }
+
+    await Object.assign(comment, { content });
+    const updatedComment = await this.commentRepository.save(comment);
+    return {
+      id: updatedComment.id,
+      post: { id: updatedComment.post.id },
+      user: { id: updatedComment.user.id },
+      content: updatedComment.content,
+      createdAt: updatedComment.createdAt,
+      updatedAt: updatedComment.updatedAt,
     };
   }
 }

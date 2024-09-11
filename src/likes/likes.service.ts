@@ -24,7 +24,7 @@ export class LikesService {
     private profilesService: ProfilesService,
   ) {}
 
-  async getLike(postId: number, userId: number): Promise<Like> {
+  async getLikeByOwner(postId: number, userId: number): Promise<Like> {
     return await this.likeRepository.findOne({
       where: { post: { id: postId }, user: { id: userId }, deletedAt: null },
     });
@@ -106,7 +106,7 @@ export class LikesService {
       throw new NotFoundException('Post or User not found');
     }
 
-    const existingLike = await this.getLike(postId, userId);
+    const existingLike = await this.getLikeByOwner(postId, userId);
 
     if (!existingLike) {
       throw new BadRequestException('User has not liked this post');

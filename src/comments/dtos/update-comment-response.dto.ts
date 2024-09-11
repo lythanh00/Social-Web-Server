@@ -1,4 +1,4 @@
-export class CreatecommentPostResponseDto {
+export class UpdatecommentResponseDto {
   id: number;
   post: {
     id: number;
