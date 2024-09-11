@@ -93,4 +93,22 @@ export class CommentsService {
       updatedAt: updatedComment.updatedAt,
     };
   }
+
+  async removeCommentPost(
+    commentId: number,
+    userId: number,
+  ): Promise<{ message: string }> {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId, user: { id: userId } },
+    });
+
+    if (!comment) {
+      throw new NotFoundException(
+        'Comment not found or You are not allowed to delete this comment',
+      );
+    }
+
+    await this.commentRepository.softDelete(commentId);
+    return { message: 'You have successfully delete the comment.' };
+  }
 }

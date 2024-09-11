@@ -41,7 +41,7 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @Put('update-comment-post/:commentId')
-  async updateComment(
+  async updateCommentPost(
     @Request() req,
     @Param('commentId') commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
@@ -55,7 +55,10 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @Delete('remove-comment-post/:commentId')
-  async deleteComment(@Request() req, @Param('commentId') commentId: number) {
-    return this.commentsService.deleteComment(commentId, req.user.id);
+  async removeCommentPost(
+    @Request() req,
+    @Param('commentId') commentId: number,
+  ) {
+    return this.commentsService.removeCommentPost(commentId, req.user.id);
   }
 }
