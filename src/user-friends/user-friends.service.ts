@@ -36,7 +36,7 @@ export class UserFriendsService {
   ): Promise<FriendOfListFriendsResponseDto[]> {
     const userFriends = await this.userFriendRepository.find({
       where: [{ user: { id: userId } }],
-      relations: ['friend', 'friend.profile'],
+      relations: ['friend', 'friend.profile', 'friend.profile.avatar'],
     });
 
     return userFriends.map((userFriend) => ({
