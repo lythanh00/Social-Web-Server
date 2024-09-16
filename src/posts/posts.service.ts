@@ -158,7 +158,7 @@ export class PostsService {
         id: post.id,
         content: post.content,
         createdAt: post.createdAt,
-        updateAt: post.updatedAt,
+        updatedAt: post.updatedAt,
         images: post.images.map((image) => ({
           id: image.image.id,
           url: image.image.url,

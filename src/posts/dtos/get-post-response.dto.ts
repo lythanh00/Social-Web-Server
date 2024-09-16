@@ -2,7 +2,7 @@ export class GetPostResponseDto {
   id: number;
   content: string;
   createdAt: Date;
-  updateAt: Date;
+  updatedAt: Date;
   images?: {
     id: number;
     url: string;
