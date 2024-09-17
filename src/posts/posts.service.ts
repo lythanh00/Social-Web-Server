@@ -149,6 +149,9 @@ export class PostsService {
       const listPosts = await this.postRepository.find({
         where: { user: { id: userId } },
         relations: ['images', 'images.image'],
+        order: {
+          createdAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+        },
       });
       if (!listPosts) {
         throw new UnauthorizedException('List posts not found...');
