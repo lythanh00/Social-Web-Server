@@ -89,7 +89,13 @@ export class ProfilesController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async getProfileById(@Param('id') id: number): Promise<Profile> {
+  async getProfileByUserId(@Param('id') id: number): Promise<Profile> {
     return this.profilesService.getProfile(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('orther-profile/:id')
+  async getProfileByProfileId(@Param('id') id: number): Promise<Profile> {
+    return this.profilesService.getProfileByProfileId(id);
   }
 }

@@ -43,6 +43,18 @@ export class ProfilesService {
     return profile;
   }
 
+  // get profile by profile id
+  async getProfileByProfileId(profileId) {
+    const profile = await this.profileRepository.findOne({
+      where: { id: profileId },
+      relations: ['avatar', 'coverPhoto'], // Tự động tải avatar và coverPhoto
+    });
+    if (!profile) {
+      throw new UnauthorizedException('Profile not found...');
+    }
+    return profile;
+  }
+
   //Update profile
   async updateProfile(userId, updateProfileDto: UpdateProfileDto) {
     const profile = await this.getProfile(userId);
@@ -111,6 +123,7 @@ export class ProfilesService {
         { firstName: ILike(`%${name}%`) },
         { lastName: ILike(`%${name}%`) },
       ],
+      relations: ['avatar'],
     });
   }
 }
