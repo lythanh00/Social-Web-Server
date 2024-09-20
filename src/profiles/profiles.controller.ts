@@ -19,6 +19,7 @@ import { Profile } from '../database/profile.entity';
 import { AuthGuard } from 'auth/guard/auth.guard';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetProfileResponseDto } from './dtos/get-profile-response.dto';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -27,7 +28,7 @@ export class ProfilesController {
   @Get('profile')
   getProfile(@Request() req) {
     console.log('req', req.user.id);
-    return this.profilesService.getProfile(req.user.id);
+    return this.profilesService.getProfileByUserId(req.user.id);
   }
 
   @UseGuards(AuthGuard)
@@ -89,13 +90,17 @@ export class ProfilesController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async getProfileByUserId(@Param('id') id: number): Promise<Profile> {
-    return this.profilesService.getProfile(id);
+  async getProfileByUserId(
+    @Param('id') id: number,
+  ): Promise<GetProfileResponseDto> {
+    return this.profilesService.getProfileByUserId(id);
   }
 
   @UseGuards(AuthGuard)
   @Get('orther-profile/:id')
-  async getProfileByProfileId(@Param('id') id: number): Promise<Profile> {
+  async getProfileByProfileId(
+    @Param('id') id: number,
+  ): Promise<GetProfileResponseDto> {
     return this.profilesService.getProfileByProfileId(id);
   }
 }

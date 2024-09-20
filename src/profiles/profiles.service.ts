@@ -13,6 +13,8 @@ import { Asset } from 'database/asset.entity';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { CloudinaryService } from 'cloudinary/cloudinary.service';
 import { UsersService } from 'users/users.service';
+import { SearchProfileResponseDto } from './dtos/search-profile-response.dto';
+import { GetProfileResponseDto } from './dtos/get-profile-response.dto';
 
 @Injectable()
 export class ProfilesService {
@@ -32,32 +34,58 @@ export class ProfilesService {
     const profile = this.profileRepository.create({ user, avatar, coverPhoto });
     return this.profileRepository.save(profile);
   }
-  async getProfile(userId) {
+  async getProfileByUserId(userId): Promise<GetProfileResponseDto> {
     const profile = await this.profileRepository.findOne({
       where: { user: { id: userId } },
-      relations: ['avatar', 'coverPhoto'], // Tự động tải avatar và coverPhoto
+      relations: ['avatar', 'coverPhoto', 'user'], // Tự động tải avatar và coverPhoto
     });
     if (!profile) {
       throw new UnauthorizedException('Profile not found...');
     }
-    return profile;
+    return {
+      id: profile.id,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      dateOfBirth: profile.dateOfBirth,
+      bio: profile.bio,
+      location: profile.location,
+      interests: profile.interests,
+      createdAt: profile.createdAt,
+      updatedAt: profile.updatedAt,
+      avatar: profile.avatar,
+      coverPhoto: profile.coverPhoto,
+      userId: profile.user.id,
+    };
   }
 
   // get profile by profile id
-  async getProfileByProfileId(profileId) {
+  async getProfileByProfileId(profileId): Promise<GetProfileResponseDto> {
     const profile = await this.profileRepository.findOne({
       where: { id: profileId },
-      relations: ['avatar', 'coverPhoto'], // Tự động tải avatar và coverPhoto
+      relations: ['avatar', 'coverPhoto', 'user'], // Tự động tải avatar và coverPhoto
     });
     if (!profile) {
       throw new UnauthorizedException('Profile not found...');
     }
-    return profile;
+    return {
+      id: profile.id,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      dateOfBirth: profile.dateOfBirth,
+      bio: profile.bio,
+      location: profile.location,
+      interests: profile.interests,
+      createdAt: profile.createdAt,
+      updatedAt: profile.updatedAt,
+      avatar: profile.avatar,
+      coverPhoto: profile.coverPhoto,
+      userId: profile.user.id,
+    };
   }
 
   //Update profile
   async updateProfile(userId, updateProfileDto: UpdateProfileDto) {
-    const profile = await this.getProfile(userId);
+    const profile = await this.getProfileByUserId(userId);
 
     if (!profile) {
       throw new UnauthorizedException('Profile not found...');
@@ -68,7 +96,7 @@ export class ProfilesService {
   }
 
   async updateAvatarProfile(userId, file: Express.Multer.File) {
-    const profile = await this.getProfile(userId);
+    const profile = await this.getProfileByUserId(userId);
 
     if (!profile) {
       throw new UnauthorizedException('Profile not found...');
@@ -89,7 +117,7 @@ export class ProfilesService {
   }
 
   async updateCoverPhotoProfile(userId, file: Express.Multer.File) {
-    const profile = await this.getProfile(userId);
+    const profile = await this.getProfileByUserId(userId);
 
     if (!profile) {
       throw new UnauthorizedException('Profile not found...');
@@ -114,16 +142,28 @@ export class ProfilesService {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    return this.getProfile(user.id);
+    return this.getProfileByUserId(user.id);
   }
 
-  async findProfilesByName(name: string): Promise<Profile[]> {
-    return this.profileRepository.find({
+  async findProfilesByName(name: string): Promise<SearchProfileResponseDto[]> {
+    const profiles = await this.profileRepository.find({
       where: [
         { firstName: ILike(`%${name}%`) },
         { lastName: ILike(`%${name}%`) },
       ],
-      relations: ['avatar'],
+      relations: ['avatar', 'user'],
     });
+    return profiles.map((profile) => ({
+      id: profile.id,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+
+      avatar: {
+        id: profile.avatar.id,
+        url: profile.avatar.url,
+      },
+
+      userId: profile.user.id,
+    }));
   }
 }

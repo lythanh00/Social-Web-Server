@@ -22,13 +22,26 @@ export class UserFriendsService {
   }
 
   async getUserFriend(userId: number, friendId: number): Promise<UserFriend> {
-    const user = await this.usersService.getUserById(userId);
-    const friend = await this.usersService.getUserById(friendId);
     const userFriend = await this.userFriendRepository.findOne({
       where: { user: { id: userId }, friend: { id: friendId } },
       relations: ['user', 'friend'],
     });
     return userFriend;
+  }
+
+  async isFriend(userId: number, friendId: number): Promise<boolean> {
+    const userFriend = await this.userFriendRepository.findOne({
+      where: [
+        { user: { id: userId }, friend: { id: friendId } },
+        { user: { id: friendId }, friend: { id: userId } },
+      ],
+    });
+
+    if (userFriend) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async getListFriends(
