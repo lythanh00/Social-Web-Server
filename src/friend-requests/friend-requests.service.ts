@@ -100,16 +100,8 @@ export class FriendRequestsService {
 
     return {
       id: friendRequest.id,
-      sender: {
-        id: sender.id,
-        email: sender.email,
-        profile: senderProfile,
-      },
-      receiver: {
-        id: receiver.id,
-        email: receiver.email,
-        profile: receiverProfile,
-      },
+      senderId: sender.id,
+      receiverId: receiver.id,
       status: 'pending',
       createdAt: friendRequest.createdAt,
       updatedAt: friendRequest.updatedAt,
@@ -144,5 +136,40 @@ export class FriendRequestsService {
     return {
       status: friendRequest.status,
     };
+  }
+
+  async isPendingFriendRequest(
+    senderId: number,
+    receiverId: number,
+  ): Promise<boolean> {
+    const friendRequest = await this.friendRequestRepository.findOne({
+      where: [
+        { sender: { id: senderId }, receiver: { id: receiverId } },
+        { sender: { id: receiverId }, receiver: { id: senderId } },
+      ],
+      order: { createdAt: 'DESC' }, // lấy friend request mới nhất
+    });
+
+    if (friendRequest && friendRequest.status === 'pending') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  async removeFriendRequest(senderId: number, receiverId: number) {
+    const friendRequest = await this.friendRequestRepository.findOne({
+      where: [
+        { sender: { id: senderId }, receiver: { id: receiverId } },
+        { sender: { id: receiverId }, receiver: { id: senderId } },
+      ],
+      order: { createdAt: 'DESC' }, // lấy friend request mới nhất
+    });
+    if (friendRequest && friendRequest.status === 'pending') {
+      await this.friendRequestRepository.softDelete(friendRequest.id); // Soft delete với TypeORM
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -1,15 +1,7 @@
 export class FriendRequestResponseDto {
   id: number;
-  sender: {
-    id: number;
-    email: string;
-    profile: any;
-  };
-  receiver: {
-    id: number;
-    email: string;
-    profile: any;
-  };
+  senderId: number;
+  receiverId: number;
   status: 'pending' | 'accepted' | 'declined';
   createdAt: Date;
   updatedAt: Date;

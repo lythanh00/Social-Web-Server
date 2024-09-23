@@ -25,4 +25,13 @@ export class UserFriendsController {
   async removeFriend(@Request() req, @Body('friendId') friendId: number) {
     return this.userFriendsService.removeFriend(req.user.id, friendId);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('is-friend/:friendId')
+  async isFriend(
+    @Request() req,
+    @Param('friendId') friendId: number,
+  ): Promise<boolean> {
+    return this.userFriendsService.isFriend(req.user.id, friendId);
+  }
 }
