@@ -14,6 +14,7 @@ import { FriendRequestResponseDto } from './dtos/friend-request-response.dto';
 import { ProfilesService } from 'profiles/profiles.service';
 import { UserFriendsService } from 'user-friends/user-friends.service';
 import { RespondToFriendRequestResponseDto } from './dtos/respond-to-friend-request-response.dto';
+import { ReceivedFriendRequestResponseDto } from './dtos/received-friend-request-response.dto';
 
 @Injectable()
 export class FriendRequestsService {
@@ -171,5 +172,29 @@ export class FriendRequestsService {
     } else {
       return false;
     }
+  }
+
+  async getReceivedFriendRequests(
+    userId: number,
+  ): Promise<ReceivedFriendRequestResponseDto[]> {
+    const receivedFriendRequests = await this.friendRequestRepository.find({
+      where: [{ receiver: { id: userId }, status: 'pending' }],
+      relations: ['sender', 'sender.profile', 'sender.profile.avatar'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return receivedFriendRequests.map((receivedFriendRequest) => ({
+      id: receivedFriendRequest.id,
+      sender: {
+        userId: receivedFriendRequest.sender.id,
+        profile: {
+          firstName: receivedFriendRequest.sender.profile.firstName,
+          lastName: receivedFriendRequest.sender.profile.lastName,
+          avatar: {
+            url: receivedFriendRequest.sender.profile.avatar.url,
+          },
+        },
+      },
+    }));
   }
 }

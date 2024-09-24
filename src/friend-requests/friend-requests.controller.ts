@@ -60,4 +60,10 @@ export class FriendRequestsController {
       receiverId,
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Get('list-received-friend-requests')
+  async getReceivedFriendRequests(@Request() req) {
+    return this.friendRequestsService.getReceivedFriendRequests(req.user.id);
+  }
 }
