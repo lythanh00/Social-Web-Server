@@ -128,7 +128,10 @@ export class FriendRequestsService {
         friendRequest.sender,
         friendRequest.receiver,
       );
-      console.log(userFriend);
+      const userFriend2 = await this.userFriendsService.createUserFriend(
+        friendRequest.receiver,
+        friendRequest.sender,
+      );
     } else {
       friendRequest.status = 'rejected';
       await this.friendRequestRepository.save(friendRequest);
