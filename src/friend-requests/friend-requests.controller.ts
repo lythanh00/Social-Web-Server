@@ -42,7 +42,7 @@ export class FriendRequestsController {
   async checkIsPendingFriendRequest(
     @Request() req,
     @Param('receiverId') receiverId: number,
-  ): Promise<boolean> {
+  ): Promise<{ isPending: boolean; owner: 'sender' | 'receiver' | null }> {
     return this.friendRequestsService.isPendingFriendRequest(
       req.user.id,
       receiverId,

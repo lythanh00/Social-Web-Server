@@ -145,20 +145,25 @@ export class FriendRequestsService {
   async isPendingFriendRequest(
     senderId: number,
     receiverId: number,
-  ): Promise<boolean> {
+  ): Promise<{ isPending: boolean; owner: 'sender' | 'receiver' | null }> {
     const friendRequest = await this.friendRequestRepository.findOne({
       where: [
         { sender: { id: senderId }, receiver: { id: receiverId } },
         { sender: { id: receiverId }, receiver: { id: senderId } },
       ],
+      relations: ['sender'],
       order: { createdAt: 'DESC' }, // lấy friend request mới nhất
     });
 
     if (friendRequest && friendRequest.status === 'pending') {
-      return true;
-    } else {
-      return false;
+      if (friendRequest.sender.id === senderId) {
+        return { isPending: true, owner: 'sender' }; // Bạn là người gửi yêu cầu kết bạn
+      } else {
+        return { isPending: true, owner: 'receiver' }; // Bạn là người nhận yêu cầu kết bạn
+      }
     }
+
+    return { isPending: false, owner: null };
   }
 
   async removeFriendRequest(senderId: number, receiverId: number) {
