@@ -64,6 +64,8 @@ export class UserFriendsService {
   async removeFriend(userId: number, friendId: number) {
     const userFriend = await this.getUserFriend(userId, friendId);
     await this.userFriendRepository.softDelete(userFriend.id); // Soft delete với TypeORM
+    const userFriend2 = await this.getUserFriend(friendId, userId);
+    await this.userFriendRepository.softDelete(userFriend2.id);
     return true;
   }
 }
