@@ -34,4 +34,10 @@ export class UserFriendsController {
   ): Promise<boolean> {
     return this.userFriendsService.isFriend(req.user.id, friendId);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('list-friends-by-user/:userId')
+  async getFriendsByUser(@Param('userId') userId: number) {
+    return this.userFriendsService.getListFriends(userId);
+  }
 }
