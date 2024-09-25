@@ -97,7 +97,7 @@ export class ProfilesController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('orther-profile/:id')
+  @Get('other-profile/:id')
   async getProfileByProfileId(
     @Param('id') id: number,
   ): Promise<GetProfileResponseDto> {
