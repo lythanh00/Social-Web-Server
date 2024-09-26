@@ -126,4 +126,10 @@ export class PostsController {
       updatePostDto,
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Get('list-posts-by-owner-and-friends')
+  async getListPostsByOwnerAndFriends(@Request() req) {
+    return this.postsService.getListPostsByOwnerAndFriends(req.user.id);
+  }
 }

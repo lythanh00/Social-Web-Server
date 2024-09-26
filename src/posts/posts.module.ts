@@ -7,6 +7,7 @@ import { CloudinaryModule } from 'cloudinary/cloudinary.module';
 import { AssetsModule } from 'assets/assets.module';
 import { PostImagesModule } from 'post-images/post-images.module';
 import { UsersModule } from 'users/users.module';
+import { UserFriendsModule } from 'user-friends/user-friends.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersModule } from 'users/users.module';
     CloudinaryModule,
     PostImagesModule,
     UsersModule,
+    UserFriendsModule,
   ],
   providers: [PostsService],
   controllers: [PostsController],

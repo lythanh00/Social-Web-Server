@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Post } from '../database/post.entity';
 import { User } from 'database/user.entity';
 
@@ -18,6 +18,7 @@ import { CreatePostResponseDto } from './dtos/create-post-response.dto';
 import { GetPostResponseDto } from './dtos/get-post-response.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { UpdatePostResponseDto } from './dtos/update-post-response.dto';
+import { UserFriendsService } from 'user-friends/user-friends.service';
 
 @Injectable()
 export class PostsService {
@@ -28,6 +29,7 @@ export class PostsService {
     private cloudinary: CloudinaryService,
     private postImagesService: PostImagesService,
     private usersService: UsersService,
+    private userFriendsService: UserFriendsService,
   ) {}
 
   async getBasePostById(id) {
@@ -150,7 +152,7 @@ export class PostsService {
         where: { user: { id: userId } },
         relations: ['images', 'images.image'],
         order: {
-          createdAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+          updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
       });
       if (!listPosts) {
@@ -247,5 +249,59 @@ export class PostsService {
         url: image.image.url,
       })),
     };
+  }
+
+  // lay danh sach bai viet theo owner and friends
+  async getListPostsByOwnerAndFriends(ownerId) {
+    // lấy danh sach ban be
+    const userFriends = await this.userFriendsService.getListFriends(ownerId);
+
+    // lay ra danh sach id cua ban be
+    const userFriendIds = userFriends.map((userFriend) => {
+      return userFriend.friend.id;
+    });
+
+    // them owner id vao
+    const ownerIdAndUserFriendIds = [ownerId, ...userFriendIds];
+
+    const listPosts = await this.postRepository.find({
+      where: { user: In(ownerIdAndUserFriendIds) },
+      relations: [
+        'images',
+        'images.image',
+        'user',
+        'user.profile',
+        'user.profile.avatar',
+      ],
+      order: {
+        updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+      },
+    });
+    if (!listPosts) {
+      throw new UnauthorizedException('List posts not found...');
+    }
+
+    return listPosts.map((post) => ({
+      id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      images: post.images.map((image) => ({
+        id: image.image.id,
+        url: image.image.url,
+      })),
+      user: {
+        id: post.user.id,
+        profile: {
+          id: post.user.profile.id,
+          firstName: post.user.profile.firstName,
+          lastName: post.user.profile.lastName,
+          avatar: {
+            id: post.user.profile.avatar.id,
+            url: post.user.profile.avatar.url,
+          },
+        },
+      },
+    }));
   }
 }
