@@ -19,6 +19,7 @@ import { GetPostResponseDto } from './dtos/get-post-response.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { UpdatePostResponseDto } from './dtos/update-post-response.dto';
 import { UserFriendsService } from 'user-friends/user-friends.service';
+import { LikesService } from 'likes/likes.service';
 
 @Injectable()
 export class PostsService {
@@ -272,6 +273,10 @@ export class PostsService {
         'user',
         'user.profile',
         'user.profile.avatar',
+        'likes',
+        'likes.user',
+        'likes.user.profile',
+        'likes.user.profile.avatar',
       ],
       order: {
         updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
@@ -302,6 +307,18 @@ export class PostsService {
           },
         },
       },
+      likes: post.likes.map((like) => ({
+        user: {
+          id: like.user.id,
+          profile: {
+            firstName: like.user.profile.firstName,
+            lastName: like.user.profile.lastName,
+            avatar: {
+              url: like.user.profile.avatar.url,
+            },
+          },
+        },
+      })),
     }));
   }
 }

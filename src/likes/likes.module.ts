@@ -16,5 +16,6 @@ import { UsersModule } from 'users/users.module';
   ],
   providers: [LikesService],
   controllers: [LikesController],
+  exports: [LikesService],
 })
 export class LikesModule {}

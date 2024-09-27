@@ -3,16 +3,8 @@ import {
   Get,
   Param,
   Post,
-  Body,
   UseGuards,
   Request,
-  Put,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
-  Query,
   Delete,
 } from '@nestjs/common';
 import { LikesService } from './likes.service';

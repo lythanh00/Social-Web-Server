@@ -26,13 +26,10 @@ import { CommentsModule } from 'comments/comments.module';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1y' },
     }),
+
     MailerModule,
     ProfilesModule,
     AssetsModule,
-    FriendRequestsModule,
-    PostsModule,
-    LikesModule,
-    CommentsModule,
   ],
   providers: [
     AuthService,
