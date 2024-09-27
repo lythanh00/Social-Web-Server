@@ -68,4 +68,10 @@ export class UserFriendsService {
     await this.userFriendRepository.softDelete(userFriend2.id);
     return true;
   }
+
+  async countFriendsByUser(userId: number): Promise<number> {
+    return await this.userFriendRepository.count({
+      where: [{ user: { id: userId } }],
+    });
+  }
 }

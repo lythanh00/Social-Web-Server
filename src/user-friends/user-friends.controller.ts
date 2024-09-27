@@ -40,4 +40,16 @@ export class UserFriendsController {
   async getFriendsByUser(@Param('userId') userId: number) {
     return this.userFriendsService.getListFriends(userId);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('count-friends-by-owner')
+  async countFriendsByOwner(@Request() req) {
+    return this.userFriendsService.countFriendsByUser(req.user.id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('count-friends-by-user/:userId')
+  async countFriendsByUser(@Param('userId') userId: number) {
+    return this.userFriendsService.countFriendsByUser(userId);
+  }
 }
