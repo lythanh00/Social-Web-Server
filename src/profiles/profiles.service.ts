@@ -58,31 +58,6 @@ export class ProfilesService {
     };
   }
 
-  // get profile by profile id
-  async getProfileByProfileId(profileId): Promise<GetProfileResponseDto> {
-    const profile = await this.profileRepository.findOne({
-      where: { id: profileId },
-      relations: ['avatar', 'coverPhoto', 'user'], // Tự động tải avatar và coverPhoto
-    });
-    if (!profile) {
-      throw new UnauthorizedException('Profile not found...');
-    }
-    return {
-      id: profile.id,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      dateOfBirth: profile.dateOfBirth,
-      bio: profile.bio,
-      location: profile.location,
-      interests: profile.interests,
-      createdAt: profile.createdAt,
-      updatedAt: profile.updatedAt,
-      avatar: profile.avatar,
-      coverPhoto: profile.coverPhoto,
-      userId: profile.user.id,
-    };
-  }
-
   //Update profile
   async updateProfile(userId, updateProfileDto: UpdateProfileDto) {
     const profile = await this.getProfileByUserId(userId);

@@ -26,8 +26,8 @@ export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
-    console.log('req', req.user.id);
+  async getProfile(@Request() req) {
+    console.log('req.user.id', req.user.id);
     return this.profilesService.getProfileByUserId(req.user.id);
   }
 
@@ -89,18 +89,10 @@ export class ProfilesController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
+  @Get('profile/:userId')
   async getProfileByUserId(
-    @Param('id') id: number,
+    @Param('userId') userId: number,
   ): Promise<GetProfileResponseDto> {
-    return this.profilesService.getProfileByUserId(id);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('other-profile/:id')
-  async getProfileByProfileId(
-    @Param('id') id: number,
-  ): Promise<GetProfileResponseDto> {
-    return this.profilesService.getProfileByProfileId(id);
+    return this.profilesService.getProfileByUserId(userId);
   }
 }
