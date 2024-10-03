@@ -44,7 +44,7 @@ export class CommentsService {
 
     const listComments = await this.commentRepository.find({
       where: { post: { id: postId } },
-      relations: ['user', 'post'], // Để lấy thông tin người dùng đã bình luận
+      relations: ['user', 'post', 'user.profile', 'user.profile.avatar'], // Để lấy thông tin người dùng đã bình luận
     });
 
     return listComments.map((comment) => ({
@@ -54,6 +54,13 @@ export class CommentsService {
       },
       user: {
         id: comment.user.id,
+        profile: {
+          firstName: comment.user.profile.firstName,
+          lastName: comment.user.profile.lastName,
+          avatar: {
+            url: comment.user.profile.avatar.url,
+          },
+        },
       },
       content: comment.content,
       createdAt: comment.createdAt,
