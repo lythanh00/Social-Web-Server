@@ -5,6 +5,13 @@ export class CreatecommentResponseDto {
   };
   user: {
     id: number;
+    profile: {
+      firstName: string;
+      lastName: string;
+      avatar: {
+        url: string;
+      };
+    };
   };
   content: string;
   createdAt: Date;

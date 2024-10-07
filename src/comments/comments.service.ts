@@ -24,6 +24,7 @@ export class CommentsService {
     private commentRepository: Repository<Comment>,
     private postsService: PostsService,
     private usersService: UsersService,
+    private profilesService: ProfilesService,
   ) {}
 
   async createComment(
@@ -80,6 +81,7 @@ export class CommentsService {
     }
 
     const user = await this.usersService.getUserById(userId);
+    const profile = await this.profilesService.getProfileByUserId(userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -93,6 +95,13 @@ export class CommentsService {
       },
       user: {
         id: user.id,
+        profile: {
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          avatar: {
+            url: profile.avatar.url,
+          },
+        },
       },
       content: comment.content,
       createdAt: comment.createdAt,
