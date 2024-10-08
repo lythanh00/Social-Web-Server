@@ -19,6 +19,7 @@ import { AssetsModule } from 'assets/assets.module';
 import { FriendRequestsModule } from 'friend-requests/friend-requests.module';
 import { LikesModule } from 'likes/likes.module';
 import { CommentsModule } from 'comments/comments.module';
+import { ChatsModule } from 'chats/chats.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CommentsModule } from 'comments/comments.module';
     PostsModule,
     LikesModule,
     CommentsModule,
+    ChatsModule,
     // SendgridModule,
     LoggerModule.forRoot(),
     // ConfigModule, // Import ConfigModule để sử dụng ConfigService

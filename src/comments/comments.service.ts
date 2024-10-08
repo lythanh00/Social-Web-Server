@@ -13,7 +13,7 @@ import { UsersService } from 'users/users.service';
 import { Post } from 'database/post.entity';
 import { User } from 'database/user.entity';
 import { ProfilesService } from 'profiles/profiles.service';
-import { CreatecommentResponseDto } from './dtos/create-comment-response.dto';
+import { CreateCommentResponseDto } from './dtos/create-comment-response.dto';
 import { UpdatecommentResponseDto } from './dtos/update-comment-response.dto';
 import { GetCommentResponseDto } from './dtos/get-comment-response.dto';
 
@@ -73,7 +73,7 @@ export class CommentsService {
     userId: number,
     postId: number,
     content: string,
-  ): Promise<CreatecommentResponseDto> {
+  ): Promise<CreateCommentResponseDto> {
     const post = await this.postsService.getBasePostById(postId);
 
     if (!post) {

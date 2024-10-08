@@ -9,6 +9,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from 'database/user.entity';
 
@@ -50,4 +51,7 @@ export class Message {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 }

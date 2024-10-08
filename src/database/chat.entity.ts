@@ -8,6 +8,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from 'database/user.entity';
 
@@ -29,6 +30,9 @@ export class Chat {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date | null;
 
   @OneToMany(() => Message, (message) => message.chat)
   messages: Message[];
