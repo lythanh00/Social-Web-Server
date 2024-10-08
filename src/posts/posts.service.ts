@@ -151,7 +151,14 @@ export class PostsService {
     {
       const listPosts = await this.postRepository.find({
         where: { user: { id: userId } },
-        relations: ['images', 'images.image'],
+        relations: [
+          'images',
+          'images.image',
+          'likes',
+          'likes.user',
+          'likes.user.profile',
+          'likes.user.profile.avatar',
+        ],
         order: {
           updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
@@ -168,6 +175,18 @@ export class PostsService {
         images: post.images.map((image) => ({
           id: image.image.id,
           url: image.image.url,
+        })),
+        likes: post.likes.map((like) => ({
+          user: {
+            id: like.user.id,
+            profile: {
+              firstName: like.user.profile.firstName,
+              lastName: like.user.profile.lastName,
+              avatar: {
+                url: like.user.profile.avatar.url,
+              },
+            },
+          },
         })),
       }));
     }
