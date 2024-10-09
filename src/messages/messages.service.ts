@@ -12,7 +12,6 @@ import { UsersService } from 'users/users.service';
 import { SendMessageResponseDto } from './dtos/send-message-response.dto';
 import { CloudinaryService } from 'cloudinary/cloudinary.service';
 import { AssetsService } from 'assets/assets.service';
-import { SendImageMessageResponseDto } from './dtos/send-image-message-response.dto';
 
 @Injectable()
 export class MessagesService {
@@ -46,6 +45,7 @@ export class MessagesService {
     return {
       id: message.id,
       text: message.text,
+      image: null,
       createdAt: message.createdAt,
     };
   }
@@ -54,7 +54,7 @@ export class MessagesService {
     senderId: number,
     file: Express.Multer.File,
     sendMessageDto: SendMessageDto,
-  ): Promise<SendImageMessageResponseDto> {
+  ): Promise<SendMessageResponseDto> {
     const { chatId, receiverId } = sendMessageDto;
 
     const chat = await this.chatsService.getChatByChatId(chatId);
@@ -82,8 +82,24 @@ export class MessagesService {
 
     return {
       id: message.id,
+      text: null,
       image: message.image.url,
       createdAt: message.createdAt,
     };
+  }
+
+  async getMessagesByChat(chatId: number): Promise<SendMessageResponseDto[]> {
+    const listMessages = await this.messageRepository.find({
+      where: { chat: { id: chatId } },
+      relations: ['image'],
+      order: { createdAt: 'ASC' },
+    });
+
+    return listMessages.map((message) => ({
+      id: message.id,
+      text: message.text,
+      image: message.image ? message.image?.url : null,
+      createdAt: message.createdAt,
+    }));
   }
 }

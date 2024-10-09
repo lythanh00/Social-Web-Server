@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   Request,
@@ -45,5 +47,11 @@ export class MessagesController {
       file,
       sendMessageDto,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('list-messages-by-chat/:chatId')
+  async getMessagesByChat(@Request() req, @Param('chatId') chatId: number) {
+    return await this.messagesService.getMessagesByChat(chatId);
   }
 }
