@@ -13,6 +13,10 @@ export class ChatsService {
     private usersService: UsersService,
   ) {}
 
+  async getChatByChatId(id: number): Promise<Chat> {
+    return this.chatRepository.findOneBy({ id });
+  }
+
   async createChat(
     participant1Id: number,
     participant2Id: number,

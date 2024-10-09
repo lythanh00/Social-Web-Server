@@ -30,7 +30,7 @@ export class Message {
   @JoinColumn()
   receiver: User;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   text: string;
 
   @OneToOne(() => Asset)

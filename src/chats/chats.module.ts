@@ -9,5 +9,6 @@ import { UsersModule } from 'users/users.module';
   imports: [TypeOrmModule.forFeature([Chat]), UsersModule],
   providers: [ChatsService],
   controllers: [ChatsController],
+  exports: [ChatsService],
 })
 export class ChatsModule {}
