@@ -21,12 +21,7 @@ export class FriendRequestsService {
   constructor(
     @InjectRepository(FriendRequest)
     private friendRequestRepository: Repository<FriendRequest>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(UserFriend)
-    private userFriendRepository: Repository<UserFriend>,
     private usersService: UsersService,
-    private profilesService: ProfilesService,
     private userFriendsService: UserFriendsService,
   ) {}
 
@@ -64,16 +59,16 @@ export class FriendRequestsService {
       throw new NotFoundException('User not found.');
     }
 
-    const existingRequest = await this.userFriendsService.isFriend(
+    const existingFriend = await this.userFriendsService.isFriend(
       senderId,
       receiverId,
     );
 
-    if (existingRequest) {
+    if (existingFriend) {
       throw new BadRequestException('Friend already exists in list friends.');
     }
 
-    const existingFriend = await this.friendRequestRepository.findOne({
+    const existingRequest = await this.friendRequestRepository.findOne({
       where: [
         {
           sender: { id: senderId },
@@ -93,11 +88,6 @@ export class FriendRequestsService {
     }
 
     const friendRequest = await this.createFriendRequest(sender, receiver);
-
-    const senderProfile =
-      await this.profilesService.getProfileByUserId(senderId);
-    const receiverProfile =
-      await this.profilesService.getProfileByUserId(receiverId);
 
     return {
       id: friendRequest.id,
