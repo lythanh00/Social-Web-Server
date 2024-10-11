@@ -46,6 +46,8 @@ export class MessagesService {
       id: message.id,
       text: message.text,
       image: null,
+      senderId: senderId,
+      receiverId: receiverId,
       createdAt: message.createdAt,
     };
   }
@@ -84,6 +86,8 @@ export class MessagesService {
       id: message.id,
       text: null,
       image: message.image.url,
+      senderId: senderId,
+      receiverId: receiverId,
       createdAt: message.createdAt,
     };
   }
@@ -91,7 +95,7 @@ export class MessagesService {
   async getMessagesByChat(chatId: number): Promise<SendMessageResponseDto[]> {
     const listMessages = await this.messageRepository.find({
       where: { chat: { id: chatId } },
-      relations: ['image'],
+      relations: ['image', 'sender', 'receiver'],
       order: { createdAt: 'ASC' },
     });
 
@@ -99,6 +103,8 @@ export class MessagesService {
       id: message.id,
       text: message.text,
       image: message.image ? message.image?.url : null,
+      senderId: message.sender.id,
+      receiverId: message.receiver.id,
       createdAt: message.createdAt,
     }));
   }
