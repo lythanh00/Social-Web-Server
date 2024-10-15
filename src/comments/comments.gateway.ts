@@ -29,11 +29,11 @@ export class CommentsGateway
 
   async handleConnection(client: Socket) {
     client.connected;
-    console.log(`Client connected: ${client.id}`);
+    console.log(`Client connected comment: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    console.log(`Client disconnected comment: ${client.id}`);
   }
 
   @SubscribeMessage('join_comment')

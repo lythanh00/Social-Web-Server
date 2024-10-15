@@ -7,6 +7,7 @@ import { ChatsModule } from 'chats/chats.module';
 import { UsersModule } from 'users/users.module';
 import { CloudinaryModule } from 'cloudinary/cloudinary.module';
 import { AssetsModule } from 'assets/assets.module';
+import { MessagesGateway } from './messages.gateway';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { AssetsModule } from 'assets/assets.module';
     CloudinaryModule,
     AssetsModule,
   ],
-  providers: [MessagesService],
+  providers: [MessagesService, MessagesGateway],
   controllers: [MessagesController],
 })
 export class MessagesModule {}
