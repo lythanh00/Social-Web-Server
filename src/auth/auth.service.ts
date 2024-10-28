@@ -25,7 +25,7 @@ export class AuthService {
   async login(
     email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email');
@@ -44,8 +44,14 @@ export class AuthService {
     const payload = { id: user.id, email: user.email };
     // TODO: Generate a JWT and return it here
     // instead of the user object
+    const accessToken = await this.jwtService.signAsync(payload);
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '30d', // Thời gian sống cho refresh token
+    });
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: accessToken,
+      refresh_token: refreshToken,
     };
   }
 
@@ -94,5 +100,18 @@ export class AuthService {
     }
     const user = await this.usersService.checkVerify(email);
     return true;
+  }
+
+  async refreshToken(refreshToken: string): Promise<{ access_token: string }> {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken);
+      const newAccessToken = await this.jwtService.signAsync({
+        id: payload.id,
+        email: payload.email,
+      });
+      return { access_token: newAccessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }

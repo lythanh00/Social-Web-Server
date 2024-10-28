@@ -1,23 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { AuthGuard } from './guard/auth.guard';
-import { LocalAuthGuard } from './guard/local-auth.guard';
-import { AuthenticatedRequest } from './interface/authenticated-request.interface';
 import { RegisterDto } from './dtos/register.dto';
 import { MailTokenDto } from './dtos/mail-token.dto';
 
@@ -27,7 +11,9 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() loginDto: LoginDto): Promise<{ access_token: string }> {
+  login(
+    @Body() loginDto: LoginDto,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     return this.authService.login(loginDto.email, loginDto.password);
   }
 
@@ -39,5 +25,12 @@ export class AuthController {
   @Post('/verify-token')
   async verifyToken(@Body() mailToken: MailTokenDto) {
     return this.authService.checkVerify(mailToken.token);
+  }
+
+  @Post('/refresh-token')
+  refresh(
+    @Body('refreshToken') refreshToken: string,
+  ): Promise<{ access_token: string }> {
+    return this.authService.refreshToken(refreshToken);
   }
 }

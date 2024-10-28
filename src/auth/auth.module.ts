@@ -7,16 +7,6 @@ import { jwtConstants } from './auth.constants';
 import { MailerModule } from './mailer/mailer.module';
 import { ProfilesModule } from 'profiles/profiles.module';
 import { AssetsModule } from 'assets/assets.module';
-import { FriendRequestsModule } from 'friend-requests/friend-requests.module';
-import { PostsModule } from 'posts/posts.module';
-import { LikesModule } from 'likes/likes.module';
-import { CommentsModule } from 'comments/comments.module';
-// import { PassportModule } from '@nestjs/passport';
-// import { LocalStrategy } from './strategy/local.strategy';
-// import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
-// import { JwtStrategy } from './strategy/jwt.strategy';
-// import { ConfigModule, ConfigType } from '@nestjs/config';
-// import jwtConfig from '../config/jwt.config';
 
 @Module({
   imports: [
@@ -24,7 +14,7 @@ import { CommentsModule } from 'comments/comments.module';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1y' },
+      signOptions: { expiresIn: '120s' },
     }),
 
     MailerModule,
