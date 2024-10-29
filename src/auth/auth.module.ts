@@ -14,7 +14,7 @@ import { AssetsModule } from 'assets/assets.module';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '120s' },
+      signOptions: { expiresIn: '7d' },
     }),
 
     MailerModule,
