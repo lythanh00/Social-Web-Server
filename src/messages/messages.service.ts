@@ -112,11 +112,11 @@ export class MessagesService {
     }));
   }
 
-  async markAsRead(senderId: number, chatId: number) {
+  async markAsRead(ownerId: number, chatId: number) {
     const listMessages = await this.messageRepository.find({
       where: {
         chat: { id: chatId },
-        receiver: { id: senderId },
+        receiver: { id: ownerId },
         isRead: false,
       },
       order: { createdAt: 'ASC' },

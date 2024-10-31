@@ -67,12 +67,12 @@ export class MessagesGateway
   async handleMarkAsRead(
     client: Socket,
     payload: {
-      senderId: number;
+      ownerId: number;
       chatId: number;
     },
   ) {
-    const { senderId, chatId } = payload;
-    const markAsRead = await this.messagesService.markAsRead(senderId, chatId);
+    const { ownerId, chatId } = payload;
+    const markAsRead = await this.messagesService.markAsRead(ownerId, chatId);
 
     // Phát sự kiện `newComment` đến tất cả các client trong room của postId
     this.server.to(chatId.toString()).emit('markAsRead', markAsRead);
