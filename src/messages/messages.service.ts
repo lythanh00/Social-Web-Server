@@ -49,6 +49,7 @@ export class MessagesService {
       senderId: senderId,
       receiverId: receiverId,
       createdAt: message.createdAt,
+      isRead: message.isRead,
     };
   }
 
@@ -89,6 +90,7 @@ export class MessagesService {
       senderId: senderId,
       receiverId: receiverId,
       createdAt: message.createdAt,
+      isRead: message.isRead,
     };
   }
 

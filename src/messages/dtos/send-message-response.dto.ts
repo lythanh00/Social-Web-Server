@@ -5,4 +5,5 @@ export class SendMessageResponseDto {
   senderId: number;
   receiverId: number;
   createdAt: Date;
+  isRead: boolean;
 }
