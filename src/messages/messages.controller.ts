@@ -7,6 +7,7 @@ import {
   Param,
   ParseFilePipe,
   Post,
+  Put,
   Request,
   UploadedFile,
   UseGuards,
@@ -53,5 +54,12 @@ export class MessagesController {
   @Get('list-messages-by-chat/:chatId')
   async getMessagesByChat(@Request() req, @Param('chatId') chatId: number) {
     return await this.messagesService.getMessagesByChat(chatId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('mark-message-as-read')
+  async markMessageAsRead(@Request() req, @Body('chatId') chatId: number) {
+    await this.messagesService.markAsRead(req.user.id, chatId);
+    return true;
   }
 }

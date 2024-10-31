@@ -106,6 +106,28 @@ export class MessagesService {
       senderId: message.sender.id,
       receiverId: message.receiver.id,
       createdAt: message.createdAt,
+      isRead: message.isRead,
     }));
+  }
+
+  async markAsRead(senderId: number, chatId: number) {
+    const listMessages = await this.messageRepository.find({
+      where: {
+        chat: { id: chatId },
+        receiver: { id: senderId },
+        isRead: false,
+      },
+      order: { createdAt: 'ASC' },
+    });
+
+    if (listMessages.length) {
+      listMessages.forEach((message) => {
+        Object.assign(message, { isRead: true });
+      });
+
+      await this.messageRepository.save(listMessages);
+      return { success: true };
+    }
+    return { success: false };
   }
 }
