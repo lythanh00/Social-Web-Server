@@ -21,6 +21,7 @@ import { LikesModule } from 'likes/likes.module';
 import { CommentsModule } from 'comments/comments.module';
 import { ChatsModule } from 'chats/chats.module';
 import { MessagesModule } from 'messages/messages.module';
+import { NotificationsModule } from 'notifications/notifications.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MessagesModule } from 'messages/messages.module';
     CommentsModule,
     ChatsModule,
     MessagesModule,
+    NotificationsModule,
     // SendgridModule,
     LoggerModule.forRoot(),
     // ConfigModule, // Import ConfigModule để sử dụng ConfigService

@@ -8,6 +8,7 @@ import { FriendRequestsController } from './friend-requests.controller';
 import { UsersModule } from 'users/users.module';
 import { ProfilesModule } from 'profiles/profiles.module';
 import { UserFriendsModule } from 'user-friends/user-friends.module';
+import { NotificationsModule } from 'notifications/notifications.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserFriendsModule } from 'user-friends/user-friends.module';
     UsersModule,
     ProfilesModule,
     UserFriendsModule,
+    NotificationsModule,
   ],
   providers: [FriendRequestsService],
   controllers: [FriendRequestsController],

@@ -13,6 +13,7 @@ import { Post } from 'database/post.entity';
 import { User } from 'database/user.entity';
 import { UserLikePostResponseDto } from './dtos/user-like-post-response.dto';
 import { ProfilesService } from 'profiles/profiles.service';
+import { NotificationsService } from 'notifications/notifications.service';
 
 @Injectable()
 export class LikesService {
@@ -22,6 +23,7 @@ export class LikesService {
     private postsService: PostsService,
     private usersService: UsersService,
     private profilesService: ProfilesService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async getLikeByOwner(postId: number, userId: number): Promise<Like> {
@@ -67,16 +69,19 @@ export class LikesService {
     }));
   }
 
-  async likePost(userId: number, postId: number): Promise<{ message: string }> {
+  async likePost(
+    ownerId: number,
+    postId: number,
+  ): Promise<{ message: string }> {
     const post = await this.postsService.getBasePostById(postId);
-    const user = await this.usersService.getUserById(userId);
+    const owner = await this.usersService.getUserById(ownerId);
 
-    if (!post || !user) {
-      throw new NotFoundException('Post or User not found');
+    if (!post || !owner) {
+      throw new NotFoundException('Post or Owner not found');
     }
 
     const existingLike = await this.likeRepository.findOne({
-      where: { post: { id: postId }, user: { id: userId } },
+      where: { post: { id: postId }, user: { id: ownerId } },
       withDeleted: true, // Bao gồm cả những bản ghi đã bị soft delete
     });
 
@@ -87,10 +92,19 @@ export class LikesService {
         await this.likeRepository.save(existingLike);
         return { message: 'You have successfully liked the post again.' };
       } else {
-        throw new BadRequestException('User already liked this post');
+        throw new BadRequestException('You already liked this post');
       }
     } else {
-      const like = await this.createLike(post, user);
+      const like = await this.createLike(post, owner);
+
+      const userId = await this.postsService.getUserIdByPostId(postId);
+      if (ownerId !== userId) {
+        const notification = await this.notificationsService.createNotification(
+          userId,
+          'like',
+          like.id,
+        );
+      }
       return { message: 'You have successfully liked the post.' };
     }
   }

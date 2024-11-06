@@ -8,6 +8,7 @@ import { UsersModule } from 'users/users.module';
 import { CloudinaryModule } from 'cloudinary/cloudinary.module';
 import { AssetsModule } from 'assets/assets.module';
 import { MessagesGateway } from './messages.gateway';
+import { NotificationsModule } from 'notifications/notifications.module';
 
 @Module({
   imports: [

@@ -22,7 +22,6 @@ export class Notification {
   @Column({
     type: 'enum',
     enum: ['friend_request', 'comment', 'like', 'message'],
-    default: 'friend_request',
   })
   type: 'friend_request' | 'comment' | 'like' | 'message';
 

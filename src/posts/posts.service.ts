@@ -192,6 +192,7 @@ export class PostsService {
     }
   }
 
+  // xoa bai viet
   async removePost(userId: number, postId: number): Promise<boolean> {
     const post = await this.postRepository.findOne({
       where: { id: postId, user: { id: userId } },
@@ -339,5 +340,14 @@ export class PostsService {
         },
       })),
     }));
+  }
+
+  // lay ra userId theo postId
+  async getUserIdByPostId(postId: number) {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: ['user'],
+    });
+    return post.user.id;
   }
 }

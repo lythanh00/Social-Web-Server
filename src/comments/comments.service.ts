@@ -16,6 +16,7 @@ import { ProfilesService } from 'profiles/profiles.service';
 import { CreateCommentResponseDto } from './dtos/create-comment-response.dto';
 import { UpdatecommentResponseDto } from './dtos/update-comment-response.dto';
 import { GetCommentResponseDto } from './dtos/get-comment-response.dto';
+import { NotificationsService } from 'notifications/notifications.service';
 
 @Injectable()
 export class CommentsService {
@@ -25,6 +26,7 @@ export class CommentsService {
     private postsService: PostsService,
     private usersService: UsersService,
     private profilesService: ProfilesService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async createComment(
@@ -70,7 +72,7 @@ export class CommentsService {
   }
 
   async createCommentPost(
-    userId: number,
+    ownerId: number,
     postId: number,
     content: string,
   ): Promise<CreateCommentResponseDto> {
@@ -80,21 +82,31 @@ export class CommentsService {
       throw new NotFoundException('Post not found');
     }
 
-    const user = await this.usersService.getUserById(userId);
-    const profile = await this.profilesService.getProfileByUserId(userId);
+    const owner = await this.usersService.getUserById(ownerId);
+    const profile = await this.profilesService.getProfileByUserId(ownerId);
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (!owner) {
+      throw new NotFoundException('Owner not found');
     }
 
-    const comment = await this.createComment(post, user, content);
+    const comment = await this.createComment(post, owner, content);
+
+    const userId = await this.postsService.getUserIdByPostId(postId);
+    if (ownerId !== userId) {
+      const notification = await this.notificationsService.createNotification(
+        userId,
+        'comment',
+        comment.id,
+      );
+    }
+
     return {
       id: comment.id,
       post: {
         id: post.id,
       },
       user: {
-        id: user.id,
+        id: owner.id,
         profile: {
           firstName: profile.firstName,
           lastName: profile.lastName,

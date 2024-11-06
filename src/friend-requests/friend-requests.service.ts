@@ -15,6 +15,7 @@ import { ProfilesService } from 'profiles/profiles.service';
 import { UserFriendsService } from 'user-friends/user-friends.service';
 import { RespondToFriendRequestResponseDto } from './dtos/respond-to-friend-request-response.dto';
 import { ReceivedFriendRequestResponseDto } from './dtos/received-friend-request-response.dto';
+import { NotificationsService } from 'notifications/notifications.service';
 
 @Injectable()
 export class FriendRequestsService {
@@ -23,6 +24,7 @@ export class FriendRequestsService {
     private friendRequestRepository: Repository<FriendRequest>,
     private usersService: UsersService,
     private userFriendsService: UserFriendsService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async createFriendRequest(
@@ -88,6 +90,12 @@ export class FriendRequestsService {
     }
 
     const friendRequest = await this.createFriendRequest(sender, receiver);
+
+    const notification = await this.notificationsService.createNotification(
+      receiverId,
+      'friend_request',
+      friendRequest.id,
+    );
 
     return {
       id: friendRequest.id,
