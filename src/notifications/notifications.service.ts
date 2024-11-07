@@ -17,12 +17,14 @@ export class NotificationsService {
 
   // Tạo thông báo mới
   async createNotification(
-    userId: number,
+    senderId: number,
+    receiverId: number,
     type: 'friend_request' | 'comment' | 'like' | 'message',
     dataId: number,
   ): Promise<Notification> {
     const notification = this.notificationRepository.create({
-      user: { id: userId },
+      sender: { id: senderId },
+      receiver: { id: receiverId },
       type,
       dataId,
     });
@@ -38,8 +40,8 @@ export class NotificationsService {
   async getListNotificationsByUser(ownerId) {
     {
       const listNotifications = await this.notificationRepository.find({
-        where: { user: { id: ownerId } },
-        relations: [],
+        where: { receiver: { id: ownerId } },
+        relations: ['sender', 'sender.profile', 'sender.profile.avatar'],
         order: {
           updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
@@ -48,7 +50,18 @@ export class NotificationsService {
         throw new UnauthorizedException('List notifications not found...');
       }
 
-      return listNotifications;
+      return listNotifications.map((notification) => ({
+        id: notification.id,
+        type: notification.type,
+        dataId: notification.dataId,
+        isRead: notification.isRead,
+        createdAt: notification.createdAt,
+        sender: {
+          firstName: notification.sender.profile.firstName,
+          lastName: notification.sender.profile.lastName,
+          avatar: notification.sender.profile.avatar.url,
+        },
+      }));
     }
   }
 }

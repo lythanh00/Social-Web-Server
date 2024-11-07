@@ -92,6 +92,7 @@ export class FriendRequestsService {
     const friendRequest = await this.createFriendRequest(sender, receiver);
 
     const notification = await this.notificationsService.createNotification(
+      senderId,
       receiverId,
       'friend_request',
       friendRequest.id,

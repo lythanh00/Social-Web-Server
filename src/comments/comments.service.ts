@@ -94,6 +94,7 @@ export class CommentsService {
     const userId = await this.postsService.getUserIdByPostId(postId);
     if (ownerId !== userId) {
       const notification = await this.notificationsService.createNotification(
+        ownerId,
         userId,
         'comment',
         comment.id,

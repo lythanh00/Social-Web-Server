@@ -15,9 +15,13 @@ export class Notification {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.notifications)
+  @ManyToOne(() => User, (user) => user.sentNotifications)
   @JoinColumn()
-  user: User;
+  sender: User;
+
+  @ManyToOne(() => User, (user) => user.receivedNotifications)
+  @JoinColumn()
+  receiver: User;
 
   @Column({
     type: 'enum',
