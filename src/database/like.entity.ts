@@ -8,8 +8,10 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { User } from 'database/user.entity';
+import { Notification } from './notification.entity';
 
 @Entity()
 export class Like {
@@ -32,4 +34,7 @@ export class Like {
 
   @DeleteDateColumn() // Cột soft delete
   deletedAt: Date | null;
+
+  @OneToOne(() => Notification, (notification) => notification.like)
+  notification: Notification;
 }

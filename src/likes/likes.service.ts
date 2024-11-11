@@ -104,6 +104,8 @@ export class LikesService {
           userId,
           'like',
           like.id,
+          null,
+          null,
         );
       }
       return { message: 'You have successfully liked the post.' };

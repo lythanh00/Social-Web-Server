@@ -20,13 +20,17 @@ export class NotificationsService {
     senderId: number,
     receiverId: number,
     type: 'friend_request' | 'comment' | 'like' | 'message',
-    dataId: number,
+    likeId: number,
+    commentId: number,
+    friendRequestId: number,
   ): Promise<Notification> {
     const notification = this.notificationRepository.create({
       sender: { id: senderId },
       receiver: { id: receiverId },
       type,
-      dataId,
+      like: { id: likeId },
+      comment: { id: commentId },
+      friendRequest: { id: friendRequestId },
     });
     await this.notificationRepository.save(notification);
 
@@ -41,7 +45,14 @@ export class NotificationsService {
     {
       const listNotifications = await this.notificationRepository.find({
         where: { receiver: { id: ownerId } },
-        relations: ['sender', 'sender.profile', 'sender.profile.avatar'],
+        relations: [
+          'sender',
+          'sender.profile',
+          'sender.profile.avatar',
+          'like',
+          'comment',
+          'friendRequest',
+        ],
         order: {
           updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
@@ -53,7 +64,9 @@ export class NotificationsService {
       return listNotifications.map((notification) => ({
         id: notification.id,
         type: notification.type,
-        dataId: notification.dataId,
+        likeId: notification.like?.id,
+        commentId: notification.comment?.id,
+        friendRequestId: notification.friendRequest?.id,
         isRead: notification.isRead,
         createdAt: notification.createdAt,
         sender: {

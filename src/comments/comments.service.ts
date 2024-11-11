@@ -97,7 +97,9 @@ export class CommentsService {
         ownerId,
         userId,
         'comment',
+        null,
         comment.id,
+        null,
       );
     }
 

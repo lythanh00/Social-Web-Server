@@ -95,6 +95,8 @@ export class FriendRequestsService {
       senderId,
       receiverId,
       'friend_request',
+      null,
+      null,
       friendRequest.id,
     );
 

@@ -7,8 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { User } from 'database/user.entity';
+import { Like } from './like.entity';
+import { Comment } from './comment.entity';
+import { FriendRequest } from './friend-request.entity';
 
 @Entity()
 export class Notification {
@@ -29,8 +33,23 @@ export class Notification {
   })
   type: 'friend_request' | 'comment' | 'like' | 'message';
 
-  @Column()
-  dataId: number;
+  @OneToOne(() => Like, (like) => like.notification, { nullable: true })
+  @JoinColumn() // Xác định userId là khóa ngoại
+  like: Like;
+
+  @OneToOne(() => Comment, (comment) => comment.notification, {
+    nullable: true,
+  })
+  @JoinColumn() // Xác định userId là khóa ngoại
+  comment: Comment;
+
+  @OneToOne(
+    () => FriendRequest,
+    (friendRequest) => friendRequest.notification,
+    { nullable: true },
+  )
+  @JoinColumn() // Xác định userId là khóa ngoại
+  friendRequest: FriendRequest;
 
   @Column({ default: false })
   isRead: boolean;

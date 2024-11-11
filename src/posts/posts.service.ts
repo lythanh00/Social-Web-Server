@@ -43,10 +43,21 @@ export class PostsService {
     return post;
   }
 
-  // lay bai viet theo id
-  async getPostById(id) {
-    const post = await this.postRepository.findOneBy({
-      id,
+  // lay bai viet theo postId
+  async getPostByPostId(postId: number) {
+    const post = await this.postRepository.findOne({
+      where: { id: postId },
+      relations: [
+        'images',
+        'images.image',
+        'user',
+        'user.profile',
+        'user.profile.avatar',
+        'likes',
+        'likes.user',
+        'likes.user.profile',
+        'likes.user.profile.avatar',
+      ],
     });
     if (!post) {
       throw new UnauthorizedException('Post not found...');
@@ -62,6 +73,30 @@ export class PostsService {
       images: postWithImages.map((image) => ({
         id: image.id,
         url: image.image.url,
+      })),
+      user: {
+        id: post.user.id,
+        profile: {
+          id: post.user.profile.id,
+          firstName: post.user.profile.firstName,
+          lastName: post.user.profile.lastName,
+          avatar: {
+            id: post.user.profile.avatar.id,
+            url: post.user.profile.avatar.url,
+          },
+        },
+      },
+      likes: post.likes.map((like) => ({
+        user: {
+          id: like.user.id,
+          profile: {
+            firstName: like.user.profile.firstName,
+            lastName: like.user.profile.lastName,
+            avatar: {
+              url: like.user.profile.avatar.url,
+            },
+          },
+        },
       })),
     };
   }

@@ -75,8 +75,8 @@ export class PostsController {
 
   @UseGuards(AuthGuard)
   @Get('get-post/:id')
-  async getPostById(@Param('id') postId: number) {
-    return this.postsService.getPostById(postId);
+  async getPostByPostId(@Param('id') postId: number) {
+    return this.postsService.getPostByPostId(postId);
   }
 
   @UseGuards(AuthGuard)

@@ -7,8 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { User } from 'database/user.entity';
+import { Notification } from './notification.entity';
 
 @Entity()
 export class FriendRequest {
@@ -38,4 +40,7 @@ export class FriendRequest {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @OneToOne(() => Notification, (notification) => notification.friendRequest)
+  notification: Notification;
 }
