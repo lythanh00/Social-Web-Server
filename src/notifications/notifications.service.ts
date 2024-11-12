@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -50,7 +51,9 @@ export class NotificationsService {
           'sender.profile',
           'sender.profile.avatar',
           'like',
+          'like.post',
           'comment',
+          'comment.post',
           'friendRequest',
         ],
         order: {
@@ -64,8 +67,8 @@ export class NotificationsService {
       return listNotifications.map((notification) => ({
         id: notification.id,
         type: notification.type,
-        likeId: notification.like?.id,
-        commentId: notification.comment?.id,
+        likedPostId: notification.like?.post.id,
+        commentedPostId: notification.comment?.post.id,
         friendRequestId: notification.friendRequest?.id,
         isRead: notification.isRead,
         createdAt: notification.createdAt,
@@ -76,5 +79,19 @@ export class NotificationsService {
         },
       }));
     }
+  }
+
+  async markNotificationAsRead(ownerId: number, notificationId: number) {
+    const notification = await this.notificationRepository.findOneBy({
+      id: notificationId,
+      receiver: { id: ownerId },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    await Object.assign(notification, { isRead: true });
+    await this.notificationRepository.save(notification);
   }
 }
