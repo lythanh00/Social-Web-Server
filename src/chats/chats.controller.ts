@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatsService } from './chats.service';
 import { AuthGuard } from 'auth/guard/auth.guard';
 
@@ -12,5 +19,11 @@ export class ChatsController {
     @Body('participant2Id') participant2Id: number,
   ) {
     return await this.chatsService.createChat(req.user.id, participant2Id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('list-chats-by-owner')
+  async getListChatsByOwner(@Request() req) {
+    return await this.chatsService.getListChatsByUser(req.user.id);
   }
 }

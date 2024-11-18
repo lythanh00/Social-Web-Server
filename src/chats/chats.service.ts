@@ -58,4 +58,35 @@ export class ChatsService {
       participant2Id: existingChat.participant2.id,
     };
   }
+
+  // lay danh sach doan chat theo user id
+  async getListChatsByUser(ownerId: number) {
+    {
+      const listChats = await this.chatRepository.find({
+        where: { participant1: { id: ownerId } },
+        relations: [
+          'participant1',
+          'participant2',
+          'participant2.profile.avatar',
+        ],
+        order: {
+          updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+        },
+      });
+      if (!listChats) {
+        throw new NotFoundException('List chats not found...');
+      }
+
+      return listChats.map((chat) => ({
+        id: chat.id,
+        participant1Id: chat.participant1.id,
+        participant2: {
+          id: chat.participant2.id,
+          firstName: chat.participant2.profile.firstName,
+          lastName: chat.participant2.profile.lastName,
+          avatar: chat.participant2.profile.avatar.url,
+        },
+      }));
+    }
+  }
 }

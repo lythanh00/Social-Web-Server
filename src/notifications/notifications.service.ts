@@ -61,7 +61,7 @@ export class NotificationsService {
         },
       });
       if (!listNotifications) {
-        throw new UnauthorizedException('List notifications not found...');
+        throw new NotFoundException('List notifications not found...');
       }
 
       return listNotifications.map((notification) => ({
