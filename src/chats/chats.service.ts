@@ -63,10 +63,12 @@ export class ChatsService {
   async getListChatsByUser(ownerId: number) {
     {
       const listChats = await this.chatRepository.find({
-        where: { participant1: { id: ownerId } },
+        where: [
+          { participant1: { id: ownerId } },
+          { participant2: { id: ownerId } },
+        ],
         relations: [
-          'participant1',
-          'participant2',
+          'participant1.profile.avatar',
           'participant2.profile.avatar',
         ],
         order: {
@@ -79,12 +81,25 @@ export class ChatsService {
 
       return listChats.map((chat) => ({
         id: chat.id,
-        participant1Id: chat.participant1.id,
+        participant1: {
+          id: chat.participant1.id,
+          profile: {
+            firstName: chat.participant1.profile.firstName,
+            lastName: chat.participant1.profile.lastName,
+            avatar: {
+              url: chat.participant1.profile.avatar.url,
+            },
+          },
+        },
         participant2: {
           id: chat.participant2.id,
-          firstName: chat.participant2.profile.firstName,
-          lastName: chat.participant2.profile.lastName,
-          avatar: chat.participant2.profile.avatar.url,
+          profile: {
+            firstName: chat.participant2.profile.firstName,
+            lastName: chat.participant2.profile.lastName,
+            avatar: {
+              url: chat.participant2.profile.avatar.url,
+            },
+          },
         },
       }));
     }
