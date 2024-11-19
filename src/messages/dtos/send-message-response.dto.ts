@@ -4,6 +4,7 @@ export class SendMessageResponseDto {
   image: string;
   senderId: number;
   receiverId: number;
+  chatId: number;
   createdAt: Date;
   isRead: boolean;
 }

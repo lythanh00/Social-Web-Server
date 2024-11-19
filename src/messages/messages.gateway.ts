@@ -78,6 +78,12 @@ export class MessagesGateway
     this.server.to(chatId.toString()).emit('markAsRead', markAsRead);
   }
 
+  // @SubscribeMessage('leave_chat')
+  // leaveChat(client: Socket, chatId: string): void {
+  //   client.leave(chatId);
+  //   console.log(`Client ${client.id} left chat: ${chatId}`);
+  // }
+
   // @SubscribeMessage('sendComment')
   // handleSendComment(client: Socket, payload: any): void {
   //   // Broadcast the comment to all connected clients

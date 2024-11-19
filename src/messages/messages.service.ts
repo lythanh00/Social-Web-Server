@@ -48,6 +48,7 @@ export class MessagesService {
       image: null,
       senderId: senderId,
       receiverId: receiverId,
+      chatId: message.chat.id,
       createdAt: message.createdAt,
       isRead: message.isRead,
     };
@@ -89,6 +90,7 @@ export class MessagesService {
       image: message.image.url,
       senderId: senderId,
       receiverId: receiverId,
+      chatId: message.chat.id,
       createdAt: message.createdAt,
       isRead: message.isRead,
     };
@@ -107,6 +109,7 @@ export class MessagesService {
       image: message.image ? message.image?.url : null,
       senderId: message.sender.id,
       receiverId: message.receiver.id,
+      chatId: chatId,
       createdAt: message.createdAt,
       isRead: message.isRead,
     }));
@@ -128,8 +131,8 @@ export class MessagesService {
       });
 
       await this.messageRepository.save(listMessages);
-      return { success: true };
+      return true;
     }
-    return { success: false };
+    return false;
   }
 }
