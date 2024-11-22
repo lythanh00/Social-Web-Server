@@ -62,4 +62,10 @@ export class MessagesController {
     await this.messagesService.markAsRead(req.user.id, chatId);
     return true;
   }
+
+  @UseGuards(AuthGuard)
+  @Get('count-unread-chats')
+  async countUnreadChats(@Request() req) {
+    return await this.messagesService.countUnreadChats(req.user.id);
+  }
 }

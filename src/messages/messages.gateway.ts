@@ -83,10 +83,4 @@ export class MessagesGateway
   //   client.leave(chatId);
   //   console.log(`Client ${client.id} left chat: ${chatId}`);
   // }
-
-  // @SubscribeMessage('sendComment')
-  // handleSendComment(client: Socket, payload: any): void {
-  //   // Broadcast the comment to all connected clients
-  //   this.server.emit('newComment', payload);
-  // }
 }

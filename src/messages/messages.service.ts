@@ -135,4 +135,21 @@ export class MessagesService {
     }
     return false;
   }
+
+  async countUnreadChats(ownerId: number) {
+    // Truy vấn để lấy danh sách chat mà user có tin nhắn chưa đọc
+    const unreadChats = await this.messageRepository.find({
+      where: {
+        receiver: { id: ownerId },
+        isRead: false,
+      },
+      relations: ['chat'],
+    });
+
+    const uniqueArr = [...new Set(unreadChats.map((item) => item.chat.id))];
+    return {
+      unreadChatsCount: uniqueArr.length,
+      listUnreadChats: uniqueArr,
+    };
+  }
 }
