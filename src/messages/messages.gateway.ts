@@ -20,6 +20,7 @@ export class MessagesGateway
 {
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('MessagesGateway');
+  private clientUserMap: Map<string, number> = new Map();
 
   constructor(private readonly messagesService: MessagesService) {}
 
@@ -34,6 +35,13 @@ export class MessagesGateway
 
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected chat: ${client.id}`);
+    this.clientUserMap.delete(client.id);
+  }
+
+  @SubscribeMessage('watching_message')
+  handleWatchingMessage(client: Socket, userId: number): void {
+    this.clientUserMap.set(client.id, userId); // Lưu clientId và userId
+    console.log(`Client ${client.id} map userId: ${userId}`);
   }
 
   @SubscribeMessage('join_chat')
@@ -61,6 +69,30 @@ export class MessagesGateway
 
     // Phát sự kiện `newComment` đến tất cả các client trong room của postId
     this.server.to(chatId.toString()).emit('newMessage', message);
+
+    // Tìm clientId của người nhận (receiverId)
+    const receiverClientId = Array.from(this.clientUserMap.entries()).find(
+      ([, userId]) => userId === receiverId,
+    )?.[0];
+    console.log(`receiverClientId ${receiverClientId}`);
+
+    // Lấy danh sách các client trong phòng
+    const room = await this.server.in(chatId.toString()).fetchSockets();
+    console.log(`room ${chatId}`);
+
+    // Nếu phòng tồn tại và người nhận đang onl và người nhận đang không tham gia phòng chat thì gửi thông báo
+    if (
+      room &&
+      receiverClientId &&
+      !room.map((item) => item.id).includes(receiverClientId)
+    ) {
+      console.log(`Room ${chatId} has not: ${receiverClientId}`);
+      const messageNotification = { chatId, receiverId };
+
+      this.server
+        .to(receiverClientId)
+        .emit('message_notification', messageNotification);
+    }
   }
 
   @SubscribeMessage('markAsRead')
@@ -78,9 +110,9 @@ export class MessagesGateway
     this.server.to(chatId.toString()).emit('markAsRead', markAsRead);
   }
 
-  // @SubscribeMessage('leave_chat')
-  // leaveChat(client: Socket, chatId: string): void {
-  //   client.leave(chatId);
-  //   console.log(`Client ${client.id} left chat: ${chatId}`);
-  // }
+  @SubscribeMessage('leave_chat')
+  leaveChat(client: Socket, chatId: string): void {
+    client.leave(chatId);
+    console.log(`Client ${client.id} left chat: ${chatId}`);
+  }
 }
