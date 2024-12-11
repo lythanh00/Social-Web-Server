@@ -78,7 +78,12 @@ export class MessagesGateway
 
     // Lấy danh sách các client trong phòng
     const room = await this.server.in(chatId.toString()).fetchSockets();
-    console.log(`room ${chatId}`);
+    // const roomInfo = room.map((socket) => ({
+    //   id: socket.id,
+    //   rooms: Array.from(socket.rooms), // Các phòng mà socket này tham gia
+    // }));
+
+    // console.log(`Room ${chatId} members:`, roomInfo);
 
     // Nếu phòng tồn tại và người nhận đang onl và người nhận đang không tham gia phòng chat thì gửi thông báo
     if (
@@ -112,7 +117,7 @@ export class MessagesGateway
 
   @SubscribeMessage('leave_chat')
   leaveChat(client: Socket, chatId: string): void {
-    client.leave(chatId);
+    client.leave(chatId.toString());
     console.log(`Client ${client.id} left chat: ${chatId}`);
   }
 }
