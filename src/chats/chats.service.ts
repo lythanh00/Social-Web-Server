@@ -70,9 +70,12 @@ export class ChatsService {
         relations: [
           'participant1.profile.avatar',
           'participant2.profile.avatar',
+          'messages',
         ],
         order: {
-          updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+          messages: {
+            createdAt: 'DESC', // Sắp xếp theo tin nhắn mới nhất
+          },
         },
       });
       if (!listChats) {
@@ -81,6 +84,7 @@ export class ChatsService {
 
       return listChats.map((chat) => ({
         id: chat.id,
+        lastMessage: chat.messages[0]?.text || null, // Tin nhắn cuối cùng (nếu có)
         participant1: {
           id: chat.participant1.id,
           profile: {
@@ -102,6 +106,54 @@ export class ChatsService {
           },
         },
       }));
+    }
+  }
+
+  // lay doan chat voi socket
+  async getChatWithSocket(chatId: number) {
+    {
+      const chat = await this.chatRepository.findOne({
+        where: { id: chatId },
+        relations: [
+          'participant1.profile.avatar',
+          'participant2.profile.avatar',
+          'messages',
+        ],
+      });
+      if (!chat) {
+        throw new NotFoundException('Chat not found...');
+      }
+
+      // Tin nhắn cuối cùng (nếu có)
+      const lastMessage =
+        chat.messages.length > 0
+          ? chat.messages[chat.messages.length - 1].text
+          : null;
+
+      return {
+        id: chat.id,
+        lastMessage,
+        participant1: {
+          id: chat.participant1.id,
+          profile: {
+            firstName: chat.participant1.profile.firstName,
+            lastName: chat.participant1.profile.lastName,
+            avatar: {
+              url: chat.participant1.profile.avatar.url,
+            },
+          },
+        },
+        participant2: {
+          id: chat.participant2.id,
+          profile: {
+            firstName: chat.participant2.profile.firstName,
+            lastName: chat.participant2.profile.lastName,
+            avatar: {
+              url: chat.participant2.profile.avatar.url,
+            },
+          },
+        },
+      };
     }
   }
 }

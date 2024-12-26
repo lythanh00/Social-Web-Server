@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { MessagesService } from './messages.service';
+import { ChatsService } from 'chats/chats.service';
 
 @WebSocketGateway({
   cors: {
@@ -22,7 +23,10 @@ export class MessagesGateway
   private logger: Logger = new Logger('MessagesGateway');
   private clientUserMap: Map<string, number> = new Map();
 
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private chatsService: ChatsService,
+  ) {}
 
   afterInit(server: Server) {
     console.log('Initialized');
@@ -74,16 +78,9 @@ export class MessagesGateway
     const receiverClientId = Array.from(this.clientUserMap.entries()).find(
       ([, userId]) => userId === receiverId,
     )?.[0];
-    console.log(`receiverClientId ${receiverClientId}`);
 
     // Lấy danh sách các client trong phòng
     const room = await this.server.in(chatId.toString()).fetchSockets();
-    // const roomInfo = room.map((socket) => ({
-    //   id: socket.id,
-    //   rooms: Array.from(socket.rooms), // Các phòng mà socket này tham gia
-    // }));
-
-    // console.log(`Room ${chatId} members:`, roomInfo);
 
     // Nếu phòng tồn tại và người nhận đang onl và người nhận đang không tham gia phòng chat thì gửi thông báo
     if (
@@ -92,7 +89,9 @@ export class MessagesGateway
       !room.map((item) => item.id).includes(receiverClientId)
     ) {
       console.log(`Room ${chatId} has not: ${receiverClientId}`);
-      const messageNotification = { chatId, receiverId };
+      const chat = await this.chatsService.getChatWithSocket(chatId);
+
+      const messageNotification = { chat, receiverId };
 
       this.server
         .to(receiverClientId)
@@ -116,7 +115,7 @@ export class MessagesGateway
   }
 
   @SubscribeMessage('leave_chat')
-  leaveChat(client: Socket, chatId: string): void {
+  leaveChat(client: Socket, chatId: number): void {
     client.leave(chatId.toString());
     console.log(`Client ${client.id} left chat: ${chatId}`);
   }
