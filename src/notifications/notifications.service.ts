@@ -94,4 +94,14 @@ export class NotificationsService {
     await Object.assign(notification, { isRead: true });
     await this.notificationRepository.save(notification);
   }
+
+  async countUnreadNotifications(ownerId: number) {
+    const unreadNotificationsCount = await this.notificationRepository.count({
+      where: {
+        receiver: { id: ownerId },
+        isRead: false,
+      },
+    });
+    return unreadNotificationsCount;
+  }
 }

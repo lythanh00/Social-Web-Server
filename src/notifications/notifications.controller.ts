@@ -24,4 +24,12 @@ export class NotificationsController {
     );
     return true;
   }
+
+  @UseGuards(AuthGuard)
+  @Get('count-unread-notifications')
+  async countUnreadNotifications(@Request() req) {
+    return await this.notificationsService.countUnreadNotifications(
+      req.user.id,
+    );
+  }
 }
