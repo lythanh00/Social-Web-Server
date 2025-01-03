@@ -6,7 +6,7 @@ import {
 import { SendMessageDto } from './dtos/send-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from 'database/message.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { ChatsService } from 'chats/chats.service';
 import { UsersService } from 'users/users.service';
 import { SendMessageResponseDto } from './dtos/send-message-response.dto';
@@ -96,14 +96,22 @@ export class MessagesService {
     };
   }
 
-  async getMessagesByChat(chatId: number): Promise<SendMessageResponseDto[]> {
+  async getMessagesByChat(
+    chatId: number,
+    cursor?: number,
+  ): Promise<SendMessageResponseDto[]> {
+    const limit: number = 20;
+
     const listMessages = await this.messageRepository.find({
-      where: { chat: { id: chatId } },
+      where: cursor
+        ? { chat: { id: chatId }, id: LessThan(cursor) } // Điều kiện lấy các id nhỏ hơn cursor
+        : { chat: { id: chatId } },
       relations: ['image', 'sender', 'receiver'],
-      order: { createdAt: 'ASC' },
+      order: { createdAt: 'DESC' },
+      take: limit,
     });
 
-    return listMessages.map((message) => ({
+    return listMessages.reverse().map((message) => ({
       id: message.id,
       text: message.text,
       image: message.image ? message.image?.url : null,

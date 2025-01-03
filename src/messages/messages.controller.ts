@@ -8,6 +8,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
@@ -52,8 +53,12 @@ export class MessagesController {
 
   @UseGuards(AuthGuard)
   @Get('list-messages-by-chat/:chatId')
-  async getMessagesByChat(@Request() req, @Param('chatId') chatId: number) {
-    return await this.messagesService.getMessagesByChat(chatId);
+  async getMessagesByChat(
+    @Request() req,
+    @Param('chatId') chatId: number,
+    @Query('cursor') cursor: number,
+  ) {
+    return await this.messagesService.getMessagesByChat(chatId, cursor);
   }
 
   @UseGuards(AuthGuard)
