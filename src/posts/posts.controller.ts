@@ -132,7 +132,10 @@ export class PostsController {
 
   @UseGuards(AuthGuard)
   @Get('list-posts-by-owner-and-friends')
-  async getListPostsByOwnerAndFriends(@Request() req) {
-    return this.postsService.getListPostsByOwnerAndFriends(req.user.id);
+  async getListPostsByOwnerAndFriends(
+    @Request() req,
+    @Query('cursor') cursor: number,
+  ) {
+    return this.postsService.getListPostsByOwnerAndFriends(req.user.id, cursor);
   }
 }

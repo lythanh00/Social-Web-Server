@@ -317,7 +317,8 @@ export class PostsService {
   }
 
   // lay danh sach bai viet theo owner and friends
-  async getListPostsByOwnerAndFriends(ownerId) {
+  async getListPostsByOwnerAndFriends(ownerId: number, cursor?: number) {
+    const limit: number = 10;
     // lấy danh sach ban be
     const userFriends = await this.userFriendsService.getListFriends(ownerId);
 
@@ -330,7 +331,9 @@ export class PostsService {
     const ownerIdAndUserFriendIds = [ownerId, ...userFriendIds];
 
     const listPosts = await this.postRepository.find({
-      where: { user: In(ownerIdAndUserFriendIds) },
+      where: cursor
+        ? { user: In(ownerIdAndUserFriendIds), id: LessThan(cursor) }
+        : { user: In(ownerIdAndUserFriendIds) },
       relations: [
         'images',
         'images.image',
@@ -343,8 +346,9 @@ export class PostsService {
         'likes.user.profile.avatar',
       ],
       order: {
-        updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+        updatedAt: 'DESC',
       },
+      take: limit,
     });
     if (!listPosts) {
       throw new UnauthorizedException('List posts not found...');
