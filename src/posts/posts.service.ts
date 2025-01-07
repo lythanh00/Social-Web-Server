@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, LessThan, Repository } from 'typeorm';
 import { Post } from '../database/post.entity';
 import { User } from 'database/user.entity';
 
@@ -182,10 +182,18 @@ export class PostsService {
   }
 
   // lay danh sach bai viet theo user id
-  async getListPostsByUser(userId): Promise<GetPostResponseDto[]> {
+  async getListPostsByUser(
+    userId: number,
+    cursor?: number,
+  ): Promise<GetPostResponseDto[]> {
     {
+      const limit: number = 10;
+
       const listPosts = await this.postRepository.find({
-        where: { user: { id: userId } },
+        where: cursor
+          ? { user: { id: userId }, id: LessThan(cursor) }
+          : { user: { id: userId } },
+        // where: { user: { id: userId } },
         relations: [
           'images',
           'images.image',
@@ -195,8 +203,9 @@ export class PostsService {
           'likes.user.profile.avatar',
         ],
         order: {
-          updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+          updatedAt: 'DESC',
         },
+        take: limit,
       });
       if (!listPosts) {
         throw new UnauthorizedException('List posts not found...');
