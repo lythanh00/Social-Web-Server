@@ -27,8 +27,11 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @Get('get-comments-post/:postId')
-  async getCommentsByPost(@Param('postId') postId: number) {
-    return this.commentsService.getCommentsByPost(postId);
+  async getCommentsByPost(
+    @Param('postId') postId: number,
+    @Query('cursor') cursor: number,
+  ) {
+    return this.commentsService.getCommentsByPost(postId, cursor);
   }
 
   @UseGuards(AuthGuard)

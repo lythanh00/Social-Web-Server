@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Comment } from '../database/comment.entity';
 import { PostsService } from 'posts/posts.service';
 import { UsersService } from 'users/users.service';
@@ -38,7 +38,11 @@ export class CommentsService {
     return this.commentRepository.save(comment);
   }
 
-  async getCommentsByPost(postId: number): Promise<GetCommentResponseDto[]> {
+  async getCommentsByPost(
+    postId: number,
+    cursor?: number,
+  ): Promise<GetCommentResponseDto[]> {
+    const limit: number = 10;
     const post = await this.postsService.getBasePostById(postId);
 
     if (!post) {
@@ -46,8 +50,11 @@ export class CommentsService {
     }
 
     const listComments = await this.commentRepository.find({
-      where: { post: { id: postId } },
+      where: cursor
+        ? { post: { id: postId }, id: MoreThan(cursor) } // Điều kiện lấy các id nhỏ hơn cursor
+        : { post: { id: postId } },
       relations: ['user', 'post', 'user.profile', 'user.profile.avatar'], // Để lấy thông tin người dùng đã bình luận
+      take: limit,
     });
 
     return listComments.map((comment) => ({
