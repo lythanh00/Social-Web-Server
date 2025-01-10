@@ -20,6 +20,7 @@ import { UpdatePostDto } from './dtos/update-post.dto';
 import { UpdatePostResponseDto } from './dtos/update-post-response.dto';
 import { UserFriendsService } from 'user-friends/user-friends.service';
 import { LikesService } from 'likes/likes.service';
+import { ProfilesService } from 'profiles/profiles.service';
 
 @Injectable()
 export class PostsService {
@@ -30,6 +31,7 @@ export class PostsService {
     private cloudinary: CloudinaryService,
     private postImagesService: PostImagesService,
     private usersService: UsersService,
+    private profilesService: ProfilesService,
     private userFriendsService: UserFriendsService,
   ) {}
 
@@ -132,6 +134,7 @@ export class PostsService {
   ): Promise<CreatePostResponseDto> {
     const content = createPostDto.content;
     const user = await this.usersService.getUserById(userId);
+    const profile = await this.profilesService.getProfileByUserId(userId);
     const post = await this.createPost(user, content);
     const images: Asset[] = [];
     for (const file of files) {
@@ -155,6 +158,15 @@ export class PostsService {
       updatedAt: post.updatedAt,
       user: {
         id: user.id,
+        profile: {
+          id: profile.id,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          avatar: {
+            id: profile.avatar.id,
+            url: profile.avatar.url,
+          },
+        },
       },
       images: images.map((image) => ({
         id: image.id,
@@ -170,6 +182,7 @@ export class PostsService {
   ): Promise<CreatePostResponseDto> {
     const content = createPostDto.content;
     const user = await this.usersService.getUserById(userId);
+    const profile = await this.profilesService.getProfileByUserId(userId);
     const post = await this.createPost(user, content);
 
     return {
@@ -179,6 +192,15 @@ export class PostsService {
       updatedAt: post.updatedAt,
       user: {
         id: user.id,
+        profile: {
+          id: profile.id,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          avatar: {
+            id: profile.avatar.id,
+            url: profile.avatar.url,
+          },
+        },
       },
     };
   }

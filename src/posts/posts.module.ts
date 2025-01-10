@@ -8,6 +8,7 @@ import { AssetsModule } from 'assets/assets.module';
 import { PostImagesModule } from 'post-images/post-images.module';
 import { UsersModule } from 'users/users.module';
 import { UserFriendsModule } from 'user-friends/user-friends.module';
+import { ProfilesModule } from 'profiles/profiles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserFriendsModule } from 'user-friends/user-friends.module';
     PostImagesModule,
     UsersModule,
     UserFriendsModule,
+    ProfilesModule,
   ],
   providers: [PostsService],
   controllers: [PostsController],

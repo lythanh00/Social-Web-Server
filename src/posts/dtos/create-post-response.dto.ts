@@ -5,6 +5,15 @@ export class CreatePostResponseDto {
   updatedAt: Date;
   user: {
     id: number;
+    profile: {
+      id: number;
+      firstName: string;
+      lastName: string;
+      avatar: {
+        id: number;
+        url: string;
+      };
+    };
   };
   images?: {
     id: number;
