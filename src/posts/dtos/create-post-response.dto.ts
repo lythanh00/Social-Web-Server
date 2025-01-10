@@ -1,10 +1,11 @@
 export class CreatePostResponseDto {
   id: number;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
   user: {
     id: number;
   };
-  content: string;
-  createdAt: Date;
   images?: {
     id: number;
     url: string;

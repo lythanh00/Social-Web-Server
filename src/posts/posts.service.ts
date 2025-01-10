@@ -150,11 +150,12 @@ export class PostsService {
     }
     return {
       id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
       user: {
         id: user.id,
       },
-      content: post.content,
-      createdAt: post.createdAt,
       images: images.map((image) => ({
         id: image.id,
         url: image.url,
@@ -173,11 +174,12 @@ export class PostsService {
 
     return {
       id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
       user: {
         id: user.id,
       },
-      content: post.content,
-      createdAt: post.createdAt,
     };
   }
 
