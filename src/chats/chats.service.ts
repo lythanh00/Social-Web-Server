@@ -4,6 +4,7 @@ import { Chat } from 'database/chat.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'users/users.service';
 import { CreateChatResponseDto } from './dtos/create-chat-response.dto';
+import { ProfilesService } from 'profiles/profiles.service';
 
 @Injectable()
 export class ChatsService {
@@ -11,6 +12,7 @@ export class ChatsService {
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
     private usersService: UsersService,
+    private profilesService: ProfilesService,
   ) {}
 
   async getChatByChatId(id: number): Promise<Chat> {
@@ -23,6 +25,10 @@ export class ChatsService {
   ): Promise<CreateChatResponseDto> {
     const participant1 = await this.usersService.getUserById(participant1Id);
     const participant2 = await this.usersService.getUserById(participant2Id);
+    const participant1Profile =
+      await this.profilesService.getProfileByUserId(participant1Id);
+    const participant2Profile =
+      await this.profilesService.getProfileByUserId(participant2Id);
 
     // Kiểm tra nếu đã tồn tại đoạn chat giữa participant1 và participant2
     const existingChat = await this.chatRepository.findOne({
@@ -47,15 +53,27 @@ export class ChatsService {
       await this.chatRepository.save(chat);
       return {
         id: chat.id,
-        participant1Id: chat.participant1.id,
-        participant2Id: chat.participant2.id,
+        participant1: {
+          id: chat.participant1.id,
+          profile: participant1Profile,
+        },
+        participant2: {
+          id: chat.participant2.id,
+          profile: participant2Profile,
+        },
       };
     }
 
     return {
       id: existingChat.id,
-      participant1Id: existingChat.participant1.id,
-      participant2Id: existingChat.participant2.id,
+      participant1: {
+        id: existingChat.participant1.id,
+        profile: participant1Profile,
+      },
+      participant2: {
+        id: existingChat.participant2.id,
+        profile: participant2Profile,
+      },
     };
   }
 
