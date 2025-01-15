@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { Like } from '../database/like.entity';
 import { PostsService } from 'posts/posts.service';
 import { UsersService } from 'users/users.service';
@@ -26,6 +26,7 @@ export class LikesService {
     private notificationsService: NotificationsService,
   ) {}
 
+  // kiểm tra xem owner đã like chưa
   async getLikeByOwner(postId: number, userId: number): Promise<Like> {
     return await this.likeRepository.findOne({
       where: { post: { id: postId }, user: { id: userId }, deletedAt: null },
@@ -42,28 +43,36 @@ export class LikesService {
     return true;
   }
 
-  async getListLikesOfPost(postId: number): Promise<UserLikePostResponseDto[]> {
+  async getListLikesOfPost(
+    postId: number,
+    cursor?: number,
+  ): Promise<UserLikePostResponseDto[]> {
+    const limit: number = 10;
     const post = await this.postsService.getBasePostById(postId);
     if (!post) {
       throw new NotFoundException('Post not found');
     }
     const listLikes = await this.likeRepository.find({
-      where: { post: { id: postId } },
+      where: cursor
+        ? { post: { id: postId }, id: LessThan(cursor) }
+        : { post: { id: postId } },
       relations: ['user', 'user.profile', 'user.profile.avatar'],
+      order: {
+        createdAt: 'DESC',
+      },
+      take: limit,
     });
 
     return listLikes.map((like) => ({
       id: like.id,
       user: {
         id: like.user.id,
-      },
-      profile: {
-        id: like.user.id,
-        firstName: like.user.profile.firstName,
-        lastName: like.user.profile.lastName,
-        avatar: {
-          id: like.user.profile.avatar.id,
-          url: like.user.profile.avatar.url,
+        profile: {
+          firstName: like.user.profile.firstName,
+          lastName: like.user.profile.lastName,
+          avatar: {
+            url: like.user.profile.avatar.url,
+          },
         },
       },
     }));

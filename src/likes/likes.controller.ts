@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LikesService } from './likes.service';
 
@@ -28,7 +29,10 @@ export class LikesController {
   }
   @UseGuards(AuthGuard)
   @Get('list-likes/:postId')
-  async getListLikesOfPost(@Param('postId') postId: number) {
-    return this.likesService.getListLikesOfPost(postId);
+  async getListLikesOfPost(
+    @Param('postId') postId: number,
+    @Query('cursor') cursor: number,
+  ) {
+    return this.likesService.getListLikesOfPost(postId, cursor);
   }
 }

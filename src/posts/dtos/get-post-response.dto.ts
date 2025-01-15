@@ -8,15 +8,6 @@ export class GetPostResponseDto {
     url: string;
   }[];
   likes: {
-    user: {
-      id: number;
-      profile: {
-        firstName: string;
-        lastName: string;
-        avatar: {
-          url: string;
-        };
-      };
-    };
+    userId: number;
   }[];
 }

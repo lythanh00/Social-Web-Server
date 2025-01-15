@@ -19,7 +19,6 @@ import { GetPostResponseDto } from './dtos/get-post-response.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { UpdatePostResponseDto } from './dtos/update-post-response.dto';
 import { UserFriendsService } from 'user-friends/user-friends.service';
-import { LikesService } from 'likes/likes.service';
 import { ProfilesService } from 'profiles/profiles.service';
 
 @Injectable()
@@ -218,14 +217,7 @@ export class PostsService {
           ? { user: { id: userId }, id: LessThan(cursor) }
           : { user: { id: userId } },
         // where: { user: { id: userId } },
-        relations: [
-          'images',
-          'images.image',
-          'likes',
-          'likes.user',
-          'likes.user.profile',
-          'likes.user.profile.avatar',
-        ],
+        relations: ['images', 'images.image', 'likes', 'likes.user'],
         order: {
           updatedAt: 'DESC',
         },
@@ -245,16 +237,7 @@ export class PostsService {
           url: image.image.url,
         })),
         likes: post.likes.map((like) => ({
-          user: {
-            id: like.user.id,
-            profile: {
-              firstName: like.user.profile.firstName,
-              lastName: like.user.profile.lastName,
-              avatar: {
-                url: like.user.profile.avatar.url,
-              },
-            },
-          },
+          userId: like.user.id,
         })),
       }));
     }
@@ -366,8 +349,6 @@ export class PostsService {
         'user.profile.avatar',
         'likes',
         'likes.user',
-        'likes.user.profile',
-        'likes.user.profile.avatar',
       ],
       order: {
         updatedAt: 'DESC',
@@ -400,16 +381,7 @@ export class PostsService {
         },
       },
       likes: post.likes.map((like) => ({
-        user: {
-          id: like.user.id,
-          profile: {
-            firstName: like.user.profile.firstName,
-            lastName: like.user.profile.lastName,
-            avatar: {
-              url: like.user.profile.avatar.url,
-            },
-          },
-        },
+        userId: like.user.id,
       })),
     }));
   }
