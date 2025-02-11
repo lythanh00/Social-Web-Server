@@ -19,13 +19,13 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async checkVerify(email: string): Promise<User> {
-    await this.userRepository.update({ email: email }, { isVerified: true });
+  // async checkVerify(email: string): Promise<User> {
+  //   await this.userRepository.update({ email: email }, { isVerified: true });
 
-    const user = await this.userRepository.findOneBy({ email: email });
+  //   const user = await this.userRepository.findOneBy({ email: email });
 
-    return user;
-  }
+  //   return user;
+  // }
 
   async getUserById(id: number): Promise<User> {
     return this.userRepository.findOneBy({ id });

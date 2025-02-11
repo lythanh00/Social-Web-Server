@@ -55,14 +55,58 @@ export class AuthService {
     };
   }
 
-  async register(
-    email: string,
-    password: string,
-  ): Promise<{ access_token: string }> {
+  // async register(
+  //   email: string,
+  //   password: string,
+  // ): Promise<{ access_token: string }> {
+  //   const hashedPassword = await bcrypt.hash(password, 10);
+  //   const res = await this.usersService.getUserByEmail(email);
+  //   if (res?.id) {
+  //     throw new UnauthorizedException('username already in used');
+  //   }
+  //   try {
+  //     const user = await this.usersService.createUser(email, hashedPassword);
+  //     const avatar = await this.assetsService.createAsset(IMAGE.AVATAR);
+  //     const coverPhoto = await this.assetsService.createAsset(
+  //       IMAGE.COVER_PHOTO,
+  //     );
+  //     const profile = await this.profilesService.createProfile(
+  //       user,
+  //       avatar,
+  //       coverPhoto,
+  //     );
+  //     const payload = { id: user.id, email: user.email };
+  //     const access_token = await this.jwtService.signAsync(payload);
+  //     await this.mailerService.sendEmail({
+  //       email: email,
+  //       emailType: 'VERIFY',
+  //       userId: user.id,
+  //     });
+  //     return { access_token };
+  //   } catch (E11000) {
+  //     throw new UnauthorizedException('email already in used');
+  //   }
+  // }
+
+  // async checkVerify(token: string) {
+  //   const tokendecore = await this.jwtService.decode(token);
+  //   const userId = tokendecore.id;
+  //   const email = tokendecore.email;
+  //   if (!userId) {
+  //     throw new UnauthorizedException('User not found...');
+  //   }
+  //   if (!tokendecore) {
+  //     throw new UnauthorizedException('Token not match');
+  //   }
+  //   const user = await this.usersService.checkVerify(email);
+  //   return true;
+  // }
+
+  async register(email: string, password: string): Promise<boolean> {
     const hashedPassword = await bcrypt.hash(password, 10);
     const res = await this.usersService.getUserByEmail(email);
     if (res?.id) {
-      throw new UnauthorizedException('username already in used');
+      throw new UnauthorizedException('email already in used');
     }
     try {
       const user = await this.usersService.createUser(email, hashedPassword);
@@ -75,32 +119,25 @@ export class AuthService {
         avatar,
         coverPhoto,
       );
-      const payload = { id: user.id, email: user.email };
-      const access_token = await this.jwtService.signAsync(payload);
-      await this.mailerService.sendEmail({
-        email: email,
-        emailType: 'VERIFY',
-        userId: user.id,
-      });
-      return { access_token };
+      return true;
     } catch (E11000) {
       throw new UnauthorizedException('email already in used');
     }
   }
 
-  async checkVerify(token: string) {
-    const tokendecore = await this.jwtService.decode(token);
-    const userId = tokendecore.id;
-    const email = tokendecore.email;
-    if (!userId) {
-      throw new UnauthorizedException('User not found...');
-    }
-    if (!tokendecore) {
-      throw new UnauthorizedException('Token not match');
-    }
-    const user = await this.usersService.checkVerify(email);
-    return true;
-  }
+  // async checkVerify(token: string) {
+  //   const tokendecore = await this.jwtService.decode(token);
+  //   const userId = tokendecore.id;
+  //   const email = tokendecore.email;
+  //   if (!userId) {
+  //     throw new UnauthorizedException('User not found...');
+  //   }
+  //   if (!tokendecore) {
+  //     throw new UnauthorizedException('Token not match');
+  //   }
+  //   const user = await this.usersService.checkVerify(email);
+  //   return true;
+  // }
 
   async refreshToken(refreshToken: string): Promise<{ access_token: string }> {
     try {

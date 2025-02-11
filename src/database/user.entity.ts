@@ -30,7 +30,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: false })
+  @Column({ default: true })
   isVerified: boolean;
 
   @Column({ default: true })

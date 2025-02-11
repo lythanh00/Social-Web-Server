@@ -17,14 +17,19 @@ export class AuthController {
     return this.authService.login(loginDto.email, loginDto.password);
   }
 
-  @Post('/register')
-  signUp(@Body() registerDto: RegisterDto): Promise<{ access_token: string }> {
-    return this.authService.register(registerDto.email, registerDto.password);
-  }
+  // @Post('/register')
+  // signUp(@Body() registerDto: RegisterDto): Promise<{ access_token: string }> {
+  //   return this.authService.register(registerDto.email, registerDto.password);
+  // }
 
-  @Post('/verify-token')
-  async verifyToken(@Body() mailToken: MailTokenDto) {
-    return this.authService.checkVerify(mailToken.token);
+  // @Post('/verify-token')
+  // async verifyToken(@Body() mailToken: MailTokenDto) {
+  //   return this.authService.checkVerify(mailToken.token);
+  // }
+
+  @Post('/register')
+  signUp(@Body() registerDto: RegisterDto): Promise<boolean> {
+    return this.authService.register(registerDto.email, registerDto.password);
   }
 
   @Post('/refresh-token')
