@@ -56,8 +56,6 @@ export class PostsService {
         'user.profile.avatar',
         'likes',
         'likes.user',
-        'likes.user.profile',
-        'likes.user.profile.avatar',
       ],
     });
     if (!post) {
@@ -88,16 +86,7 @@ export class PostsService {
         },
       },
       likes: post.likes.map((like) => ({
-        user: {
-          id: like.user.id,
-          profile: {
-            firstName: like.user.profile.firstName,
-            lastName: like.user.profile.lastName,
-            avatar: {
-              url: like.user.profile.avatar.url,
-            },
-          },
-        },
+        userId: like.user.id,
       })),
     };
   }
