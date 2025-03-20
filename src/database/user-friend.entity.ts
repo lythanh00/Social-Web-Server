@@ -28,6 +28,6 @@ export class UserFriend {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @DeleteDateColumn() // Cột soft delete
+  @DeleteDateColumn()
   deletedAt: Date | null;
 }

@@ -34,13 +34,13 @@ export class Notification {
   type: 'friend_request' | 'comment' | 'like' | 'message';
 
   @OneToOne(() => Like, (like) => like.notification, { nullable: true })
-  @JoinColumn() // Xác định userId là khóa ngoại
+  @JoinColumn()
   like: Like;
 
   @OneToOne(() => Comment, (comment) => comment.notification, {
     nullable: true,
   })
-  @JoinColumn() // Xác định userId là khóa ngoại
+  @JoinColumn()
   comment: Comment;
 
   @OneToOne(
@@ -48,7 +48,7 @@ export class Notification {
     (friendRequest) => friendRequest.notification,
     { nullable: true },
   )
-  @JoinColumn() // Xác định userId là khóa ngoại
+  @JoinColumn()
   friendRequest: FriendRequest;
 
   @Column({ default: false })

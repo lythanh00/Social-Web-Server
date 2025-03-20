@@ -32,7 +32,7 @@ export class Like {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @DeleteDateColumn() // Cột soft delete
+  @DeleteDateColumn()
   deletedAt: Date | null;
 
   @OneToOne(() => Notification, (notification) => notification.like)
