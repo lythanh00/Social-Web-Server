@@ -23,11 +23,11 @@ export const typeOrmConfigAsync = {
     // username: 'root',
     // password: '070902',
     // database: 'social_web',
-    host: configService.get<string>('HOST'),
-    port: configService.get<number>('PORT') || 3306,
-    username: configService.get<string>('USERNAME'),
-    password: configService.get<string>('PASSWORD'),
-    database: configService.get<string>('DATABASE'),
+    host: configService.get<string>('MYSQLHOST'),
+    port: configService.get<number>('MYSQLPORT') || 3306,
+    username: configService.get<string>('MYSQLUSER'),
+    password: configService.get<string>('MYSQLPASSWORD'),
+    database: configService.get<string>('MYSQL_DATABASE'),
     entities: [
       User,
       Asset,
@@ -42,7 +42,7 @@ export const typeOrmConfigAsync = {
       Message,
       Notification,
     ], // Danh sách các entity
-    synchronize: true, // Chỉ dùng trong môi trường phát triển
+    synchronize: true, // Chỉ dùng trong môi trường phát triển tự động tạo các bảng
   }),
   inject: [ConfigService],
 };
