@@ -19,11 +19,10 @@ export const typeOrmConfigAsync = {
   useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
     const databaseConfig = {
       host: configService.get<string>('MYSQLHOST'),
-      port: Number(configService.get<number>('MYSQLPORT')) || 3306,
       username: configService.get<string>('MYSQLUSER'),
+      port: Number(configService.get<number>('MYSQLPORT')) || 3306,
       password: configService.get<string>('MYSQLPASSWORD'),
       database: configService.get<string>('MYSQLDATABASE'),
-      database2: configService.get<string>('MYSQLDATABASE'),
     };
 
     console.log('Database Config:', databaseConfig); // Log thông tin cấu hình
