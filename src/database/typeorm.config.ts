@@ -16,36 +16,37 @@ import { Notification } from 'database/notification.entity';
 
 export const typeOrmConfigAsync = {
   imports: [ConfigModule],
-  useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
-    type: 'mysql',
-    // host: 'localhost',
-    // port: 3306,
-    // username: 'root',
-    // password: '070902',
-    // database: 'social_web',
-    host: configService.get<string>('MYSQLHOST'),
-    port: Number(configService.get<number>('MYSQLPORT')) || 3306,
-    username: configService.get<string>('MYSQLUSER'),
-    password: configService.get<string>('MYSQLPASSWORD'),
-    database: configService.get<string>('MYSQL_DATABASE'),
-    entities: [
-      User,
-      Asset,
-      UserFriend,
-      FriendRequest,
-      Profile,
-      Post,
-      PostImage,
-      Comment,
-      Like,
-      Chat,
-      Message,
-      Notification,
-    ], // Danh sách các entity
-    synchronize: true, // Chỉ dùng trong môi trường phát triển tự động tạo các bảng
-    ssl: {
-      rejectUnauthorized: false, // Cần thiết khi kết nối từ Railway
-    },
-  }),
+  useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
+    const databaseConfig = {
+      host: configService.get<string>('MYSQLHOST'),
+      port: Number(configService.get<number>('MYSQLPORT')) || 3306,
+      username: configService.get<string>('MYSQLUSER'),
+      password: configService.get<string>('MYSQLPASSWORD'),
+      database: configService.get<string>('MYSQL_DATABASE'),
+    };
+
+    return {
+      ...databaseConfig,
+      type: 'mysql',
+      entities: [
+        User,
+        Asset,
+        UserFriend,
+        FriendRequest,
+        Profile,
+        Post,
+        PostImage,
+        Comment,
+        Like,
+        Chat,
+        Message,
+        Notification,
+      ],
+      synchronize: true, // Chỉ dùng trong môi trường phát triển
+      ssl: {
+        rejectUnauthorized: false, // Cần thiết khi sử dụng Railway hoặc SSL
+      },
+    };
+  },
   inject: [ConfigService],
 };
