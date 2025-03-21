@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { setupSwagger } from 'swagger';
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+// dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
