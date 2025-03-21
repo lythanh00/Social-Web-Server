@@ -25,9 +25,7 @@ export const typeOrmConfigAsync = {
       database: configService.get<string>('MYSQL_DATABASE'),
     };
 
-    console.log({
-      MYSQLHOST: process.env.MYSQLHOST,
-    });
+    console.log('MYSQLHOST:', process.env.MYSQLHOST);
 
     console.log('Database Config:', databaseConfig); // Log thông tin cấu hình
 
