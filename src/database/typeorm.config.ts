@@ -24,7 +24,7 @@ export const typeOrmConfigAsync = {
     // password: '070902',
     // database: 'social_web',
     host: configService.get<string>('MYSQLHOST'),
-    port: Number(configService.get<string>('MYSQLPORT')) || 3306,
+    port: Number(configService.get<number>('MYSQLPORT')) || 3306,
     username: configService.get<string>('MYSQLUSER'),
     password: configService.get<string>('MYSQLPASSWORD'),
     database: configService.get<string>('MYSQL_DATABASE'),
@@ -43,6 +43,9 @@ export const typeOrmConfigAsync = {
       Notification,
     ], // Danh sách các entity
     synchronize: true, // Chỉ dùng trong môi trường phát triển tự động tạo các bảng
+    ssl: {
+      rejectUnauthorized: false, // Cần thiết khi kết nối từ Railway
+    },
   }),
   inject: [ConfigService],
 };
