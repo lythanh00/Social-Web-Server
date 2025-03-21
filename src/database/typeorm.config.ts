@@ -25,6 +25,8 @@ export const typeOrmConfigAsync = {
       database: configService.get<string>('MYSQL_DATABASE'),
     };
 
+    console.log('Database Config:', databaseConfig); // Log thông tin cấu hình
+
     return {
       ...databaseConfig,
       type: 'mysql',
