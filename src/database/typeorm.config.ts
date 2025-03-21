@@ -17,14 +17,6 @@ import { Notification } from 'database/notification.entity';
 export const typeOrmConfigAsync = {
   imports: [ConfigModule],
   useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-    console.log({
-      MYSQLHOST: process.env.MYSQLHOST,
-      MYSQLPORT: process.env.MYSQLPORT,
-      MYSQLUSER: process.env.MYSQLUSER,
-      MYSQLPASSWORD: process.env.MYSQLPASSWORD,
-      MYSQL_DATABASE: process.env.MYSQL_DATABASE,
-    });
-
     const databaseConfig = {
       host: configService.get<string>('MYSQLHOST'),
       port: Number(configService.get<number>('MYSQLPORT')) || 3306,
