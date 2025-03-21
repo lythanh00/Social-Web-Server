@@ -26,6 +26,10 @@ import { NotificationsModule } from 'notifications/notifications.module';
 @Module({
   imports: [
     // ConfigModule.forRoot({ ignoreEnvFile: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+    }),
 
     AuthModule,
     UsersModule,
