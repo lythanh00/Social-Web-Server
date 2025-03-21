@@ -1,0 +1,32 @@
+import { Chat } from 'database/chat.entity';
+import { Comment } from 'database/comment.entity';
+import { FriendRequest } from 'database/friend-request.entity';
+import { Like } from 'database/like.entity';
+import { Message } from 'database/message.entity';
+import { Notification } from 'database/notification.entity';
+import { Post } from 'database/post.entity';
+import { Profile } from 'database/profile.entity';
+export declare class User {
+    id: number;
+    email: string;
+    password: string;
+    isVerified: boolean;
+    isActive: boolean;
+    onlineStatus: boolean;
+    role: 'admin' | 'user';
+    createdAt: Date;
+    updatedAt: Date;
+    profile: Profile;
+    posts: Post[];
+    friends: User[];
+    sentFriendRequests: FriendRequest[];
+    receivedFriendRequests: FriendRequest[];
+    likes: Like[];
+    chatsAsParticipant1: Chat[];
+    chatsAsParticipant2: Chat[];
+    sentMessages: Message[];
+    receivedMessages: Message[];
+    comments: Comment[];
+    sentNotifications: Notification[];
+    receivedNotifications: Notification[];
+}
