@@ -23,7 +23,7 @@ export const typeOrmConfigAsync = {
       username: configService.get<string>('MYSQLUSER'),
       password: configService.get<string>('MYSQLPASSWORD'),
       database: configService.get<string>('MYSQLDATABASE'),
-      env: process.env,
+      database2: configService.get<string>('MYSQLDATABASE'),
     };
 
     console.log('Database Config:', databaseConfig); // Log thông tin cấu hình
