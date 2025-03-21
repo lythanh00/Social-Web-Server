@@ -28,7 +28,6 @@ import { NotificationsModule } from 'notifications/notifications.module';
     // ConfigModule.forRoot({ ignoreEnvFile: true }),
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
 
     AuthModule,
