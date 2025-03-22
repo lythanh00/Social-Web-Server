@@ -35,7 +35,6 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                ignoreEnvFile: process.env.NODE_ENV === 'production',
             }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,

@@ -19,8 +19,8 @@ export const typeOrmConfigAsync = {
   useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
     const databaseConfig = {
       host: configService.get<string>('MYSQLHOST'),
-      username: configService.get<string>('MYSQLUSER'),
       port: Number(configService.get<number>('MYSQLPORT')) || 3306,
+      username: configService.get<string>('MYSQLUSER'),
       password: configService.get<string>('MYSQLPASSWORD'),
       database: configService.get<string>('MYSQL_DATABASE'),
     };

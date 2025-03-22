@@ -5,14 +5,12 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 
 import { LoggerModule } from './logger/logger.module';
-import { SendgridModule } from './sendgrid/sendgrid.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './database/typeorm.config'; // Import cấu hình async
 import { PostsModule } from 'posts/posts.module';
 import { UsersModule } from 'users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from 'auth/auth.constants';
 import { MailerModule } from 'auth/mailer/mailer.module';
 import { ProfilesModule } from 'profiles/profiles.module';
 import { AssetsModule } from 'assets/assets.module';
