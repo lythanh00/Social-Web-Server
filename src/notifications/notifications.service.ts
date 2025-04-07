@@ -58,7 +58,7 @@ export class NotificationsService {
           'friendRequest',
         ],
         order: {
-          updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
+          createdAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
         take: limit,
       });
@@ -98,12 +98,22 @@ export class NotificationsService {
   }
 
   async countUnreadNotifications(ownerId: number) {
-    const unreadNotificationsCount = await this.notificationRepository.count({
+    const limit: number = 30;
+    const notifications = await this.notificationRepository.find({
       where: {
         receiver: { id: ownerId },
-        isRead: false,
       },
+      order: {
+        createdAt: 'DESC',
+      },
+      take: limit,
     });
+
+    // Đếm số tin nhắn chưa đọc trong danh sách đã lấy
+    const unreadNotificationsCount = notifications.filter(
+      (notification) => !notification.isRead,
+    ).length;
+
     return unreadNotificationsCount;
   }
 }

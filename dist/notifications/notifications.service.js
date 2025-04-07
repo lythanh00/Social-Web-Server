@@ -49,7 +49,7 @@ let NotificationsService = class NotificationsService {
                     'friendRequest',
                 ],
                 order: {
-                    updatedAt: 'DESC',
+                    createdAt: 'DESC',
                 },
                 take: limit,
             });
@@ -87,12 +87,17 @@ let NotificationsService = class NotificationsService {
         await this.notificationRepository.save(notification);
     }
     async countUnreadNotifications(ownerId) {
-        const unreadNotificationsCount = await this.notificationRepository.count({
+        const limit = 30;
+        const notifications = await this.notificationRepository.find({
             where: {
                 receiver: { id: ownerId },
-                isRead: false,
             },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: limit,
         });
+        const unreadNotificationsCount = notifications.filter((notification) => !notification.isRead).length;
         return unreadNotificationsCount;
     }
 };
