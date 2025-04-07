@@ -4,7 +4,7 @@ export declare class NotificationsController {
     constructor(notificationsService: NotificationsService);
     getListNotificationsByOwner(req: any): Promise<{
         id: number;
-        type: "message" | "comment" | "like" | "friend_request";
+        type: "friend_request" | "comment" | "like" | "message";
         likedPostId: number;
         commentedPostId: number;
         friendRequestId: number;

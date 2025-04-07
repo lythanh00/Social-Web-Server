@@ -35,6 +35,7 @@ let NotificationsService = class NotificationsService {
     }
     async getListNotificationsByUser(ownerId) {
         {
+            const limit = 30;
             const listNotifications = await this.notificationRepository.find({
                 where: { receiver: { id: ownerId } },
                 relations: [
@@ -50,6 +51,7 @@ let NotificationsService = class NotificationsService {
                 order: {
                     updatedAt: 'DESC',
                 },
+                take: limit,
             });
             if (!listNotifications) {
                 throw new common_1.NotFoundException('List notifications not found...');

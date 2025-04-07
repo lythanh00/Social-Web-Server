@@ -44,6 +44,7 @@ export class NotificationsService {
   // lay danh sach thong bao theo user id
   async getListNotificationsByUser(ownerId) {
     {
+      const limit: number = 30;
       const listNotifications = await this.notificationRepository.find({
         where: { receiver: { id: ownerId } },
         relations: [
@@ -59,6 +60,7 @@ export class NotificationsService {
         order: {
           updatedAt: 'DESC', // Sắp xếp theo thời gian từ gần đến xa
         },
+        take: limit,
       });
       if (!listNotifications) {
         throw new NotFoundException('List notifications not found...');

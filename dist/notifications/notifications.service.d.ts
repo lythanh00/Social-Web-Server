@@ -6,7 +6,7 @@ export declare class NotificationsService {
     createNotification(senderId: number, receiverId: number, type: 'friend_request' | 'comment' | 'like' | 'message', likeId: number, commentId: number, friendRequestId: number): Promise<Notification>;
     getListNotificationsByUser(ownerId: any): Promise<{
         id: number;
-        type: "message" | "comment" | "like" | "friend_request";
+        type: "friend_request" | "comment" | "like" | "message";
         likedPostId: number;
         commentedPostId: number;
         friendRequestId: number;
